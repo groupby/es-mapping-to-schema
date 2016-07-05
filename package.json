@@ -4,7 +4,10 @@
   "description": "Convert Elasticsearch mappings to Schema Inspector schemas",
   "main": "index.js",
   "scripts": {
-    "test": "mocha test.js"
+    "test": "mocha test.js",
+    "patch": "npm version patch && git push && git push --tags && npm publish",
+    "minor": "npm version minor && git push && git push --tags && npm publish",
+    "major": "npm version major && git push && git push --tags && npm publish"
   },
   "author": "Eric Hacke",
   "license": "MIT",
