@@ -13,6 +13,16 @@
     "type": "git",
     "url": "https://github.com/groupby/es-mapping-to-schema.git"
   },
+  "keywords": [
+    "schema-inspector",
+    "elasticsearch",
+    "mapping",
+    "schema",
+    "converter",
+    "conversion",
+    "inspector",
+    "template"
+  ],
   "author": "Eric Hacke",
   "license": "MIT",
   "dependencies": {
