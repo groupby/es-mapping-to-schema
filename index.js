@@ -19,6 +19,10 @@ const RecurseMappingToSchema = (schema, mapping, modifiers) => {
     } else {
       schema.type       = 'object';
       schema.properties = RecurseMappingToSchema({}, mapping.properties, modifiers);
+
+      if (modifiers.allStrict) {
+        schema.strict = true;
+      }
     }
 
     if (modifiers.isOptional) {
@@ -83,11 +87,14 @@ const NextPaths = currentPaths => _.reduce(currentPaths, (result, currentPath) =
   return result;
 }, []);
 
-const MappingToSchema = (mapping, arrayPaths, optionalPaths) => {
+const MappingToSchema = (mapping, options) => {
+  options = options || {};
+
   const modifiers = {
-    arrayPaths:    arrayPaths,
+    arrayPaths:    options.arrayPaths,
+    allStrict:     options.allStrict && options.allStrict === true,
     isArray:       false,
-    optionalPaths: optionalPaths,
+    optionalPaths: options.optionalPaths,
     isOptional:    false
   };
 
