@@ -12,7 +12,7 @@ const DIRECT_COPY_TYPES = [
 const MAX_STRING_SIZE = 32766;
 
 const RecurseMappingToSchema = (schema, mapping, modifiers) => {
-  if (mapping.properties) {
+  if (mapping.properties || mapping.type === 'object') {
     if (modifiers.isArray) {
       schema.type  = 'array';
       schema.items = RecurseMappingToSchema({}, mapping.properties, modifiers);
