@@ -18,7 +18,10 @@ const RecurseMappingToSchema = (schema, mapping, modifiers) => {
       schema.items = RecurseMappingToSchema({}, mapping.properties, modifiers);
     } else {
       schema.type       = 'object';
-      schema.properties = RecurseMappingToSchema({}, mapping.properties, modifiers);
+
+      if (mapping.properties) {
+        schema.properties = RecurseMappingToSchema({}, mapping.properties, modifiers);
+      }
 
       if (modifiers.allStrict && !modifiers.isOptional) {
         schema.strict = true;

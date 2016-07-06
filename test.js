@@ -983,4 +983,32 @@ describe('es-mapping-to-schema tests', ()=> {
     const schema = MappingToSchema(mapping, {optionalPaths: ['selectors'], allStrict: true});
     expect(schema).to.eql(expectedSchema);
   });
+
+  it('should convert a mapping with object with no properties into a schema ', () => {
+    const mapping = {
+      properties: {
+        booleanThing:           {
+          type: 'boolean'
+        },
+        emptyObject:            {
+          type: 'object'
+        }
+      }
+    };
+
+    const expectedSchema = {
+      type:       'object',
+      properties: {
+        booleanThing:           {
+          type: 'boolean'
+        },
+        emptyObject: {
+          type: 'object'
+        }
+      }
+    };
+
+    const schema = MappingToSchema(mapping);
+    expect(schema).to.eql(expectedSchema);
+  });
 });
