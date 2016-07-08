@@ -13,6 +13,9 @@
     "type": "git",
     "url": "https://github.com/groupby/es-mapping-to-schema.git"
   },
+  "bugs": {
+    "url": "https://github.com/groupby/es-mapping-to-schema/issues"
+  },
   "keywords": [
     "schema-inspector",
     "elasticsearch",
