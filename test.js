@@ -5,7 +5,7 @@ const _      = require('lodash');
 const MappingToSchema = require('./index');
 
 describe('es-mapping-to-schema tests', ()=> {
-  it('should convert a mapping into a schema', () => {
+  it('should convert a mapping into a validation and sanitization schemas', () => {
     const mapping = {
       _all:       {
         enabled: false
@@ -122,9 +122,7 @@ describe('es-mapping-to-schema tests', ()=> {
           type: 'boolean'
         },
         stringThing:            {
-          type:      'string',
-          maxLength: 32766,
-          rules:     ['trim']
+          type: 'string'
         },
         integerThing:           {
           type: 'integer'
@@ -145,27 +143,19 @@ describe('es-mapping-to-schema tests', ()=> {
           type: 'number'
         },
         nonanalyzedStringThing: {
-          type:      'string',
-          maxLength: 32766,
-          rules:     ['trim']
+          type: 'string'
         },
         variousTerm:            {
-          type:      'string',
-          maxLength: 32766,
-          rules:     ['trim']
+          type: 'string'
         },
         customer:               {
           type:       'object',
           properties: {
             customerId: {
-              type:      'string',
-              maxLength: 32766,
-              rules:     ['trim']
+              type: 'string'
             },
             projectId:  {
-              type:      'string',
-              maxLength: 32766,
-              rules:     ['trim']
+              type: 'string'
             },
             localTime:  {
               type: 'date'
@@ -179,14 +169,10 @@ describe('es-mapping-to-schema tests', ()=> {
               type:       'object',
               properties: {
                 name:  {
-                  type:      'string',
-                  maxLength: 32766,
-                  rules:     ['trim']
+                  type: 'string'
                 },
                 value: {
-                  type:      'string',
-                  maxLength: 32766,
-                  rules:     ['trim']
+                  type: 'string'
                 }
               }
             }
@@ -195,112 +181,43 @@ describe('es-mapping-to-schema tests', ()=> {
       }
     };
 
-    const schema = MappingToSchema(mapping);
-    expect(schema).to.eql(expectedSchema);
+    const schemas = MappingToSchema(mapping, {
+      sanitization: {
+        all: {
+          types: [
+            'object',
+            'string',
+            'integer',
+            'number',
+            'array',
+            'boolean',
+            'date'
+          ]
+        }
+      }
+    });
+
+    // console.log('schemas: ' + JSON.stringify(schemas, null, 2));
+
+    expect(schemas.validation).to.eql(expectedSchema);
+    expect(schemas.sanitization).to.eql(expectedSchema);
   });
 
-  it('should convert a mapping with an array into a schema', () => {
+  it('should convert a mapping with an array into validation and sanization schemas', () => {
     const mapping = {
-      _all:       {
-        enabled: false
-      },
       properties: {
-        booleanThing:           {
+        booleanThing: {
           type: 'boolean'
         },
-        stringThing:            {
-          type: 'string'
-        },
-        integerThing:           {
-          type: 'integer'
-        },
-        longThing:              {
-          type: 'long'
-        },
-        shortThing:             {
-          type: 'short'
-        },
-        byteThing:              {
-          type: 'byte'
-        },
-        floatThing:             {
-          type: 'float'
-        },
-        doubleThing:            {
-          type: 'double'
-        },
-        nonanalyzedStringThing: {
-          type:  'string',
-          index: 'not_analyzed'
-        },
-        variousTerm:            {
-          type:   'string',
-          fields: {
-            raw:         {
-              type:  'string',
-              index: 'not_analyzed',
-              store: true
-            },
-            normalized:  {
-              type:     'string',
-              analyzer: 'facet_analyzer'
-            },
-            lang_en:     {
-              type:     'string',
-              analyzer: 'english'
-            },
-            lang_en_raw: {
-              type:     'string',
-              analyzer: 'raw_diacritic_free'
-            }
-          }
-        },
-        customer:               {
-          type:       'object',
+        selectors:    {
           properties: {
-            customerId: {
-              type:  'string',
-              index: 'not_analyzed'
-            },
-            projectId:  {
-              type:  'string',
-              index: 'not_analyzed'
-            },
-            localTime:  {
-              type:   'date',
-              format: 'dateOptionalTime'
-            }
-          }
-        },
-        selectors:              {
-          type:              'nested',
-          include_in_parent: true,
-          properties:        {
             selector: {
               properties: {
                 name:  {
-                  type:   'string',
-                  fields: {
-                    raw:        {
-                      type:  'string',
-                      index: 'not_analyzed',
-                      store: true
-                    },
-                    normalized: {
-                      type:     'string',
-                      analyzer: 'facet_analyzer'
-                    }
-                  }
+                  type: 'string'
                 },
                 value: {
-                  type:   'string',
-                  fields: {
-                    raw: {
-                      type:  'string',
-                      index: 'not_analyzed',
-                      store: true
-                    }
-                  }
+                  type: 'string'
                 }
               }
             }
@@ -312,75 +229,20 @@ describe('es-mapping-to-schema tests', ()=> {
     const expectedSchema = {
       type:       'object',
       properties: {
-        booleanThing:           {
+        booleanThing: {
           type: 'boolean'
         },
-        stringThing:            {
-          type:      'string',
-          maxLength: 32766,
-          rules:     ['trim']
-        },
-        integerThing:           {
-          type: 'integer'
-        },
-        longThing:              {
-          type: 'integer'
-        },
-        shortThing:             {
-          type: 'integer'
-        },
-        byteThing:              {
-          type: 'integer'
-        },
-        floatThing:             {
-          type: 'number'
-        },
-        doubleThing:            {
-          type: 'number'
-        },
-        nonanalyzedStringThing: {
-          type:      'string',
-          maxLength: 32766,
-          rules:     ['trim']
-        },
-        variousTerm:            {
-          type:      'string',
-          maxLength: 32766,
-          rules:     ['trim']
-        },
-        customer:               {
-          type:       'object',
-          properties: {
-            customerId: {
-              type:      'string',
-              maxLength: 32766,
-              rules:     ['trim']
-            },
-            projectId:  {
-              type:      'string',
-              maxLength: 32766,
-              rules:     ['trim']
-            },
-            localTime:  {
-              type: 'date'
-            }
-          }
-        },
-        selectors:              {
+        selectors:    {
           type:  'array',
           items: {
             selector: {
               type:       'object',
               properties: {
                 name:  {
-                  type:      'string',
-                  maxLength: 32766,
-                  rules:     ['trim']
+                  type: 'string'
                 },
                 value: {
-                  type:      'string',
-                  maxLength: 32766,
-                  rules:     ['trim']
+                  type: 'string'
                 }
               }
             }
@@ -389,112 +251,44 @@ describe('es-mapping-to-schema tests', ()=> {
       }
     };
 
-    const schema = MappingToSchema(mapping, {arrayPaths: ['selectors']});
-    expect(schema).to.eql(expectedSchema);
+    const schemas = MappingToSchema(mapping, {
+      arrayPaths:   [
+        'selectors'
+      ],
+      sanitization: {
+        all: {
+          types: [
+            'object',
+            'string',
+            'integer',
+            'number',
+            'array',
+            'boolean',
+            'date'
+          ]
+        }
+      }
+    });
+
+    expect(schemas.validation).to.eql(expectedSchema);
+    expect(schemas.sanitization).to.eql(expectedSchema);
   });
 
   it('should convert a mapping into a schema with optional properties', () => {
     const mapping = {
-      _all:       {
-        enabled: false
-      },
       properties: {
-        booleanThing:           {
+        booleanThing: {
           type: 'boolean'
         },
-        stringThing:            {
-          type: 'string'
-        },
-        integerThing:           {
-          type: 'integer'
-        },
-        longThing:              {
-          type: 'long'
-        },
-        shortThing:             {
-          type: 'short'
-        },
-        byteThing:              {
-          type: 'byte'
-        },
-        floatThing:             {
-          type: 'float'
-        },
-        doubleThing:            {
-          type: 'double'
-        },
-        nonanalyzedStringThing: {
-          type:  'string',
-          index: 'not_analyzed'
-        },
-        variousTerm:            {
-          type:   'string',
-          fields: {
-            raw:         {
-              type:  'string',
-              index: 'not_analyzed',
-              store: true
-            },
-            normalized:  {
-              type:     'string',
-              analyzer: 'facet_analyzer'
-            },
-            lang_en:     {
-              type:     'string',
-              analyzer: 'english'
-            },
-            lang_en_raw: {
-              type:     'string',
-              analyzer: 'raw_diacritic_free'
-            }
-          }
-        },
-        customer:               {
-          type:       'object',
+        selectors:    {
           properties: {
-            customerId: {
-              type:  'string',
-              index: 'not_analyzed'
-            },
-            projectId:  {
-              type:  'string',
-              index: 'not_analyzed'
-            },
-            localTime:  {
-              type:   'date',
-              format: 'dateOptionalTime'
-            }
-          }
-        },
-        selectors:              {
-          type:              'nested',
-          include_in_parent: true,
-          properties:        {
             selector: {
               properties: {
                 name:  {
-                  type:   'string',
-                  fields: {
-                    raw:        {
-                      type:  'string',
-                      index: 'not_analyzed',
-                      store: true
-                    },
-                    normalized: {
-                      type:     'string',
-                      analyzer: 'facet_analyzer'
-                    }
-                  }
+                  type: 'string'
                 },
                 value: {
-                  type:   'string',
-                  fields: {
-                    raw: {
-                      type:  'string',
-                      index: 'not_analyzed',
-                      store: true
-                    }
-                  }
+                  type: 'string'
                 }
               }
             }
@@ -506,76 +300,22 @@ describe('es-mapping-to-schema tests', ()=> {
     const expectedSchema = {
       type:       'object',
       properties: {
-        booleanThing:           {
+        booleanThing: {
           type: 'boolean'
         },
-        stringThing:            {
-          type:      'string',
-          maxLength: 32766,
-          rules:     ['trim']
-        },
-        integerThing:           {
-          type: 'integer'
-        },
-        longThing:              {
-          type: 'integer'
-        },
-        shortThing:             {
-          type: 'integer'
-        },
-        byteThing:              {
-          type: 'integer'
-        },
-        floatThing:             {
-          type: 'number'
-        },
-        doubleThing:            {
-          type: 'number'
-        },
-        nonanalyzedStringThing: {
-          type:      'string',
-          maxLength: 32766,
-          rules:     ['trim']
-        },
-        variousTerm:            {
-          type:      'string',
-          maxLength: 32766,
-          rules:     ['trim']
-        },
-        customer:               {
-          type:       'object',
-          optional:   true,
-          properties: {
-            customerId: {
-              type:      'string',
-              maxLength: 32766,
-              rules:     ['trim']
-            },
-            projectId:  {
-              type:      'string',
-              maxLength: 32766,
-              rules:     ['trim']
-            },
-            localTime:  {
-              type: 'date'
-            }
-          }
-        },
-        selectors:              {
+        selectors:    {
           type:       'object',
           properties: {
             selector: {
               type:       'object',
               properties: {
                 name:  {
-                  type:      'string',
-                  maxLength: 32766,
-                  rules:     ['trim']
+                  type:     'string',
+                  optional: true
                 },
                 value: {
-                  type:      'string',
-                  maxLength: 32766,
-                  rules:     ['trim']
+                  type:     'string',
+                  optional: true
                 }
               }
             }
@@ -584,112 +324,67 @@ describe('es-mapping-to-schema tests', ()=> {
       }
     };
 
-    const schema = MappingToSchema(mapping, {optionalPaths: ['customer']});
-    expect(schema).to.eql(expectedSchema);
+    const schemas = MappingToSchema(mapping, {
+      validation:   {
+        paths: {
+          optional: [
+            {
+              path:  'selectors.selector.name',
+              value: true
+            },
+            {
+              path:  'selectors.selector.value',
+              value: true
+            }
+          ]
+        }
+      },
+      sanitization: {
+        all:   {
+          types: [
+            'object',
+            'string',
+            'integer',
+            'number',
+            'array',
+            'boolean',
+            'date'
+          ]
+        },
+        paths: {
+          optional: [
+            {
+              path:  'selectors.selector.name',
+              value: true
+            },
+            {
+              path:  'selectors.selector.value',
+              value: true
+            }
+          ]
+        }
+      }
+    });
+
+    expect(schemas.validation).to.eql(expectedSchema);
+    expect(schemas.sanitization).to.eql(expectedSchema);
   });
 
-  it('should convert a mapping into a schema with strict properties', () => {
+  it('should convert a mapping into a schema with all strict properties', () => {
     const mapping = {
-      _all:       {
-        enabled: false
-      },
       properties: {
-        booleanThing:           {
+        booleanThing: {
           type: 'boolean'
         },
-        stringThing:            {
-          type: 'string'
-        },
-        integerThing:           {
-          type: 'integer'
-        },
-        longThing:              {
-          type: 'long'
-        },
-        shortThing:             {
-          type: 'short'
-        },
-        byteThing:              {
-          type: 'byte'
-        },
-        floatThing:             {
-          type: 'float'
-        },
-        doubleThing:            {
-          type: 'double'
-        },
-        nonanalyzedStringThing: {
-          type:  'string',
-          index: 'not_analyzed'
-        },
-        variousTerm:            {
-          type:   'string',
-          fields: {
-            raw:         {
-              type:  'string',
-              index: 'not_analyzed',
-              store: true
-            },
-            normalized:  {
-              type:     'string',
-              analyzer: 'facet_analyzer'
-            },
-            lang_en:     {
-              type:     'string',
-              analyzer: 'english'
-            },
-            lang_en_raw: {
-              type:     'string',
-              analyzer: 'raw_diacritic_free'
-            }
-          }
-        },
-        customer:               {
-          type:       'object',
+        selectors:    {
           properties: {
-            customerId: {
-              type:  'string',
-              index: 'not_analyzed'
-            },
-            projectId:  {
-              type:  'string',
-              index: 'not_analyzed'
-            },
-            localTime:  {
-              type:   'date',
-              format: 'dateOptionalTime'
-            }
-          }
-        },
-        selectors:              {
-          type:              'nested',
-          include_in_parent: true,
-          properties:        {
             selector: {
               properties: {
                 name:  {
-                  type:   'string',
-                  fields: {
-                    raw:        {
-                      type:  'string',
-                      index: 'not_analyzed',
-                      store: true
-                    },
-                    normalized: {
-                      type:     'string',
-                      analyzer: 'facet_analyzer'
-                    }
-                  }
+                  type: 'string'
                 },
                 value: {
-                  type:   'string',
-                  fields: {
-                    raw: {
-                      type:  'string',
-                      index: 'not_analyzed',
-                      store: true
-                    }
-                  }
+                  type: 'string'
                 }
               }
             }
@@ -702,62 +397,10 @@ describe('es-mapping-to-schema tests', ()=> {
       type:       'object',
       strict:     true,
       properties: {
-        booleanThing:           {
+        booleanThing: {
           type: 'boolean'
         },
-        stringThing:            {
-          type:      'string',
-          maxLength: 32766,
-          rules:     ['trim']
-        },
-        integerThing:           {
-          type: 'integer'
-        },
-        longThing:              {
-          type: 'integer'
-        },
-        shortThing:             {
-          type: 'integer'
-        },
-        byteThing:              {
-          type: 'integer'
-        },
-        floatThing:             {
-          type: 'number'
-        },
-        doubleThing:            {
-          type: 'number'
-        },
-        nonanalyzedStringThing: {
-          type:      'string',
-          maxLength: 32766,
-          rules:     ['trim']
-        },
-        variousTerm:            {
-          type:      'string',
-          maxLength: 32766,
-          rules:     ['trim']
-        },
-        customer:               {
-          strict:     true,
-          type:       'object',
-          properties: {
-            customerId: {
-              type:      'string',
-              maxLength: 32766,
-              rules:     ['trim']
-            },
-            projectId:  {
-              type:      'string',
-              maxLength: 32766,
-              rules:     ['trim']
-            },
-            localTime:  {
-              type: 'date'
-            }
-          }
-        },
-        selectors:              {
+        selectors:    {
           type:       'object',
           strict:     true,
           properties: {
@@ -766,14 +409,10 @@ describe('es-mapping-to-schema tests', ()=> {
               strict:     true,
               properties: {
                 name:  {
-                  type:      'string',
-                  maxLength: 32766,
-                  rules:     ['trim']
+                  type: 'string'
                 },
                 value: {
-                  type:      'string',
-                  maxLength: 32766,
-                  rules:     ['trim']
+                  type: 'string'
                 }
               }
             }
@@ -782,112 +421,134 @@ describe('es-mapping-to-schema tests', ()=> {
       }
     };
 
-    const schema = MappingToSchema(mapping, {allStrict: true});
-    expect(schema).to.eql(expectedSchema);
+    const schemas = MappingToSchema(mapping, {
+      validation:   {
+        all: {
+          strict: true
+        }
+      },
+      sanitization: {
+        all: {
+          strict: true,
+          types:  [
+            'object',
+            'string',
+            'integer',
+            'number',
+            'array',
+            'boolean',
+            'date'
+          ]
+        }
+      }
+    });
+
+    expect(schemas.validation).to.eql(expectedSchema);
+    expect(schemas.sanitization).to.eql(expectedSchema);
   });
 
-  it('should convert a mapping into a schema with optional and strict properties', () => {
+  it('should convert a mapping into a schema with some strict properties', () => {
     const mapping = {
-      _all:       {
-        enabled: false
-      },
       properties: {
-        booleanThing:           {
+        booleanThing: {
           type: 'boolean'
         },
-        stringThing:            {
-          type: 'string'
-        },
-        integerThing:           {
-          type: 'integer'
-        },
-        longThing:              {
-          type: 'long'
-        },
-        shortThing:             {
-          type: 'short'
-        },
-        byteThing:              {
-          type: 'byte'
-        },
-        floatThing:             {
-          type: 'float'
-        },
-        doubleThing:            {
-          type: 'double'
-        },
-        nonanalyzedStringThing: {
-          type:  'string',
-          index: 'not_analyzed'
-        },
-        variousTerm:            {
-          type:   'string',
-          fields: {
-            raw:         {
-              type:  'string',
-              index: 'not_analyzed',
-              store: true
-            },
-            normalized:  {
-              type:     'string',
-              analyzer: 'facet_analyzer'
-            },
-            lang_en:     {
-              type:     'string',
-              analyzer: 'english'
-            },
-            lang_en_raw: {
-              type:     'string',
-              analyzer: 'raw_diacritic_free'
-            }
-          }
-        },
-        customer:               {
-          type:       'object',
+        selectors:    {
           properties: {
-            customerId: {
-              type:  'string',
-              index: 'not_analyzed'
-            },
-            projectId:  {
-              type:  'string',
-              index: 'not_analyzed'
-            },
-            localTime:  {
-              type:   'date',
-              format: 'dateOptionalTime'
-            }
-          }
-        },
-        selectors:              {
-          type:              'nested',
-          include_in_parent: true,
-          properties:        {
             selector: {
               properties: {
                 name:  {
-                  type:   'string',
-                  fields: {
-                    raw:        {
-                      type:  'string',
-                      index: 'not_analyzed',
-                      store: true
-                    },
-                    normalized: {
-                      type:     'string',
-                      analyzer: 'facet_analyzer'
-                    }
-                  }
+                  type: 'string'
                 },
                 value: {
-                  type:   'string',
-                  fields: {
-                    raw: {
-                      type:  'string',
-                      index: 'not_analyzed',
-                      store: true
-                    }
-                  }
+                  type: 'string'
+                }
+              }
+            }
+          }
+        }
+      }
+    };
+
+    const expectedSchema = {
+      type:       'object',
+      properties: {
+        booleanThing: {
+          type: 'boolean'
+        },
+        selectors:    {
+          type:       'object',
+          strict:     true,
+          properties: {
+            selector: {
+              type:       'object',
+              properties: {
+                name:  {
+                  type: 'string'
+                },
+                value: {
+                  type: 'string'
+                }
+              }
+            }
+          }
+        }
+      }
+    };
+
+    const schemas = MappingToSchema(mapping, {
+      validation:   {
+        paths: {
+          strict: [
+            {
+              path:  'selectors',
+              value: true
+            }
+          ]
+        }
+      },
+      sanitization: {
+        all:   {
+          types: [
+            'object',
+            'string',
+            'integer',
+            'number',
+            'array',
+            'boolean',
+            'date'
+          ]
+        },
+        paths: {
+          strict: [
+            {
+              path:  'selectors',
+              value: true
+            }
+          ]
+        }
+      }
+    });
+
+    expect(schemas.validation).to.eql(expectedSchema);
+    expect(schemas.sanitization).to.eql(expectedSchema);
+  });
+
+  it('should convert a mapping into a schema with all strict, and some optional properties', () => {
+    const mapping = {
+      properties: {
+        booleanThing: {
+          type: 'boolean'
+        },
+        selectors:    {
+          properties: {
+            selector: {
+              properties: {
+                name:  {
+                  type: 'string'
+                },
+                value: {
+                  type: 'string'
                 }
               }
             }
@@ -900,78 +561,23 @@ describe('es-mapping-to-schema tests', ()=> {
       type:       'object',
       strict:     true,
       properties: {
-        booleanThing:           {
+        booleanThing: {
           type: 'boolean'
         },
-        stringThing:            {
-          type:      'string',
-          maxLength: 32766,
-          rules:     ['trim']
-        },
-        integerThing:           {
-          type: 'integer'
-        },
-        longThing:              {
-          type: 'integer'
-        },
-        shortThing:             {
-          type: 'integer'
-        },
-        byteThing:              {
-          type: 'integer'
-        },
-        floatThing:             {
-          type: 'number'
-        },
-        doubleThing:            {
-          type: 'number'
-        },
-        nonanalyzedStringThing: {
-          type:      'string',
-          maxLength: 32766,
-          rules:     ['trim']
-        },
-        variousTerm:            {
-          type:      'string',
-          maxLength: 32766,
-          rules:     ['trim']
-        },
-        customer:               {
+        selectors:    {
+          type:       'object',
           strict:     true,
-          type:       'object',
-          properties: {
-            customerId: {
-              type:      'string',
-              maxLength: 32766,
-              rules:     ['trim']
-            },
-            projectId:  {
-              type:      'string',
-              maxLength: 32766,
-              rules:     ['trim']
-            },
-            localTime:  {
-              type: 'date'
-            }
-          }
-        },
-        selectors:              {
-          type:       'object',
-          optional: true,
           properties: {
             selector: {
-              type:       'object',
               strict:     true,
+              type:       'object',
+              optional:   true,
               properties: {
                 name:  {
-                  type:      'string',
-                  maxLength: 32766,
-                  rules:     ['trim']
+                  type: 'string'
                 },
                 value: {
-                  type:      'string',
-                  maxLength: 32766,
-                  rules:     ['trim']
+                  type: 'string'
                 }
               }
             }
@@ -980,35 +586,224 @@ describe('es-mapping-to-schema tests', ()=> {
       }
     };
 
-    const schema = MappingToSchema(mapping, {optionalPaths: ['selectors'], allStrict: true});
-    expect(schema).to.eql(expectedSchema);
+    const schemas = MappingToSchema(mapping, {
+      validation:   {
+        all:   {
+          strict: true
+        },
+        paths: {
+          optional: [
+            {
+              path:  'selectors.selector',
+              value: true
+            }
+          ]
+        }
+      },
+      sanitization: {
+        all:   {
+          strict: true,
+          types:  [
+            'object',
+            'string',
+            'integer',
+            'number',
+            'array',
+            'boolean',
+            'date'
+          ]
+        },
+        paths: {
+          optional: [
+            {
+              path:  'selectors.selector',
+              value: true
+            }
+          ]
+        }
+      }
+    });
+
+    expect(schemas.validation).to.eql(expectedSchema);
+    expect(schemas.sanitization).to.eql(expectedSchema);
   });
 
-  it('should convert a mapping with object with no properties into a schema ', () => {
+  it('should convert a mapping into a schema with rules', () => {
     const mapping = {
       properties: {
-        booleanThing:           {
+        booleanThing: {
           type: 'boolean'
         },
-        emptyObject:            {
-          type: 'object'
+        selectors:    {
+          properties: {
+            selector: {
+              properties: {
+                name:  {
+                  type: 'string'
+                },
+                value: {
+                  type: 'string'
+                }
+              }
+            }
+          }
         }
       }
     };
 
-    const expectedSchema = {
+    const expectedValidatationSchema = {
       type:       'object',
       properties: {
-        booleanThing:           {
+        booleanThing: {
           type: 'boolean'
         },
-        emptyObject: {
-          type: 'object'
+        selectors:    {
+          type:       'object',
+          properties: {
+            selector: {
+              type:       'object',
+              properties: {
+                name:  {
+                  type: 'string'
+                },
+                value: {
+                  type: 'string'
+                }
+              }
+            }
+          }
         }
       }
     };
 
-    const schema = MappingToSchema(mapping);
-    expect(schema).to.eql(expectedSchema);
+    const expectedSanitizationSchema = {
+      type:       'object',
+      properties: {
+        booleanThing: {
+          type: 'boolean'
+        },
+        selectors:    {
+          type:       'object',
+          properties: {
+            selector: {
+              type:       'object',
+              properties: {
+                name:  {
+                  type:  'string',
+                  rules: [
+                    'trim',
+                    'lowercase'
+                  ]
+                },
+                value: {
+                  type:  'string',
+                  rules: [
+                    'trim',
+                    'lowercase'
+                  ]
+                }
+              }
+            }
+          }
+        }
+      }
+    };
+
+    const schemas = MappingToSchema(mapping, {
+      sanitization: {
+        all: {
+          rules: [
+            'trim',
+            'lowercase'
+          ],
+          types: [
+            'object',
+            'string',
+            'integer',
+            'number',
+            'array',
+            'boolean',
+            'date'
+          ]
+        }
+      }
+    });
+
+    expect(schemas.validation).to.eql(expectedValidatationSchema);
+    expect(schemas.sanitization).to.eql(expectedSanitizationSchema);
+  });
+
+  it('should shorten all paths by one level', () => {
+    const paths = {
+      def: [
+        {
+          path: 'something.yo.this',
+          value: true
+        },
+        {
+          path: 'something.alkf.asfd',
+          value: 'ddd'
+        },
+        {
+          path: 'gone',
+          value: 'asfdsd'
+        }
+      ],
+      optional: [
+        {
+          path: 'other.that.wer',
+          value: 2393
+        }
+      ]
+    };
+
+    const shortenedPaths = MappingToSchema.__nextPaths(paths);
+
+    expect(shortenedPaths).to.eql({
+      def: [
+        {
+          path: 'yo.this',
+          value: true
+        },
+        {
+          path: 'alkf.asfd',
+          value: 'ddd'
+        }
+      ],
+      optional: [
+        {
+          path: 'that.wer',
+          value: 2393
+        }
+      ]
+    });
+  });
+
+  it('should return the options applicable to a specific field', ()=>{
+    const paths = {
+      def: [
+        {
+          path: 'something.yo.this',
+          value: true
+        },
+        {
+          path: 'onTarget',
+          value: 'asfdsd'
+        }
+      ],
+      optional: [
+        {
+          path: 'onTarget',
+          value: 2393
+        }
+      ]
+    };
+
+    const localOptions = MappingToSchema.__getLocalOptions(paths, 'onTarget');
+
+    expect(localOptions).to.eql({
+      def: 'asfdsd',
+      optional: 2393
+    });
   });
 });
