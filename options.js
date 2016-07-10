@@ -1,18 +1,21 @@
+const _         = require('lodash');
 const inspector = require('schema-inspector');
 
 const VALIDATION_SCHEMA = {
   type:       'object',
+  strict:     true,
   properties: {
-    arrayPaths:        {
-      optional:   true,
-      type:       'array',
-      items: {
+    arrayPaths:   {
+      optional: true,
+      type:     'array',
+      items:    {
         type: 'string'
       }
     },
     validation:   {
       optional:   true,
       type:       'object',
+      strict:     true,
       properties: {
         all:   {
           optional:   true,
@@ -53,10 +56,12 @@ const VALIDATION_SCHEMA = {
     sanitization: {
       optional:   true,
       type:       'object',
+      strict:     true,
       properties: {
         all:   {
           optional:   true,
           type:       'object',
+          strict:     true,
           properties: {
             strict:    {
               optional: true,
