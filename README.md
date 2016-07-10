@@ -4,6 +4,7 @@ This allows you to convert an [elasticsearch mapping](https://www.elastic.co/gui
 into a schema that works with [Schema Inspector](http://atinux.github.io/schema-inspector/).
 
 ### Changelog:
+3.0.1 - Removed unused dependencies
 3.0.0 - Completely changed the API and output. Now offers more options, and generates separate schemas for validation and 
 sanitization. Previous version combined validation and sanitization into a single schema, with occasionally bad results.
 
