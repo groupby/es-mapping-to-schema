@@ -39,10 +39,6 @@ const recurseMappingProperties = (mapping, schema, schemaType, options) => {
     schema[name] = {};
     result[name] = RecurseMappingToSchema(mapping[name], schema[name], schemaType, nextOptions, nextLocalOptions);
 
-    if (_.size(result[name]) === 0) {
-      delete result[name];
-    }
-
     return result;
   }, {});
 };
@@ -54,17 +50,9 @@ const recurseMappingObjects = (mapping, schema, schemaType, options, localOption
   if (mapping.properties || mapping.type === 'object' || mapping.type === 'nested') {
     if (options.isArray) {
       schema.items = RecurseMappingToSchema(mapping.properties, {}, schemaType, options, {});
-
-      if (_.size(schema.items) === 0) {
-        delete schema.items;
-      }
     } else {
       if (mapping.properties) {
         schema.properties = RecurseMappingToSchema(mapping.properties, {}, schemaType, options, {});
-
-        if (_.size(schema.properties) === 0) {
-          delete schema.properties;
-        }
       }
 
       if (strict) {
@@ -199,53 +187,3 @@ MappingToSchema.__nextPaths       = nextPaths;
 MappingToSchema.__getLocalOptions = getLocalOptions;
 
 module.exports = MappingToSchema;
-
-const Options = {
-  // 'arrayPaths' are used to define properties in the mapping that appear as objects but should be validated as arrays
-  // This is because elasticsearch does not explicitly support arrays, but schema inspector does
-  arrayPaths:   [],
-  // These are the rules and options that will apply only to validation schema generation
-  validation:   {
-    // 'all' fields are applied recursively to all appropriate fields
-    // Currently supports 'strict' and 'optional' for validation
-    all:   {
-      strict:   false,
-      optional: false
-    },
-    // 'paths' are specific path overrides.
-    // For 'paths', any field, value, and path combination is allowed
-    // In this case field 'pattern' is applied with value '/must be this/' to property 'path.to.some.property'
-    paths: {
-      pattern: [
-        {
-          path: 'path.to.some.property',
-          value: /must be this/
-        }
-      ]
-    }
-  },
-  // These are the rules and options that will apply only to sanitization schema generation
-  sanitization: {
-    // 'all' fields are applied recursively to all appropriate fields.
-    // Currently supports 'strict', 'rules', and 'maxLength' for sanitization.
-    // The 'types' field is special, in that you must explicitly list the types you want to sanitize
-    // otherwise none will sanitized.
-    all:   {
-      strict: false,
-      rules: [],
-      maxLength: 10,
-      types: []
-    },
-    // 'paths' are specific path overrides.
-    // For 'paths', any field, value, and path combination is allowed
-    // In this case field 'def' is applied with value 'default to this' to property 'path.to.some.property'
-    paths: {
-      def: [
-        {
-          path: 'path.to.some.property',
-          value: 'default to this'
-        }
-      ]
-    }
-  }
-};

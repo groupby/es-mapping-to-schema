@@ -806,4 +806,74 @@ describe('es-mapping-to-schema tests', ()=> {
       optional: 2393
     });
   });
+
+  it('should produce a schemas with empty objects for every property if nothing else is needed', ()=> {
+    const mapping = {
+      properties: {
+        booleanThing: {
+          type: 'boolean'
+        },
+        selectors:    {
+          properties: {
+            selector: {
+              properties: {
+                name:  {
+                  type: 'string'
+                },
+                value: {
+                  type: 'string'
+                }
+              }
+            }
+          }
+        }
+      }
+    };
+
+    const expectedValidataionSchema = {
+      type:       'object',
+      properties: {
+        booleanThing: {
+          type: 'boolean'
+        },
+        selectors:    {
+          type:       'object',
+          properties: {
+            selector: {
+              type:       'object',
+              properties: {
+                name:  {
+                  type: 'string'
+                },
+                value: {
+                  type: 'string'
+                }
+              }
+            }
+          }
+        }
+      }
+    };
+
+    const expectedSanitizationSchema = {
+      properties: {
+        booleanThing: {},
+        selectors:    {
+          properties: {
+            selector: {
+              properties: {
+                name:  {},
+                value: {}
+              }
+            }
+          }
+        }
+      }
+    };
+
+    const schemas = MappingToSchema(mapping);
+
+    expect(schemas.validation).to.eql(expectedValidataionSchema);
+    expect(schemas.sanitization).to.eql(expectedSanitizationSchema);
+  });
 });
