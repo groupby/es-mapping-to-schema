@@ -1,7 +1,10 @@
-const gulp     = require('gulp');
-const mocha    = require('gulp-mocha');
-const eslint   = require('gulp-eslint');
-const istanbul = require('gulp-istanbul');
+/*es-lint no-process-env: "off"*/
+const path      = require('path');
+const gulp      = require('gulp');
+const mocha     = require('gulp-mocha');
+const eslint    = require('gulp-eslint');
+const istanbul  = require('gulp-istanbul');
+const coveralls = require('gulp-coveralls');
 
 gulp.task('test:dirty', ()=> {
   return gulp.src('test.js')
@@ -9,7 +12,10 @@ gulp.task('test:dirty', ()=> {
 });
 
 gulp.task('pre-test', ()=> {
-  return gulp.src(['index.js', 'options.js'])
+  return gulp.src([
+    'index.js',
+    'options.js'
+  ])
     .pipe(istanbul())
     .pipe(istanbul.hookRequire());
 });
@@ -20,7 +26,8 @@ gulp.task('test:coverage', ['pre-test'], ()=> {
     .pipe(istanbul.writeReports({
       reporters: [
         'text',
-        'html'
+        'html',
+        'lcov'
       ]
     }))
     .pipe(istanbul.enforceThresholds({thresholds: {global: 70}}))
@@ -59,3 +66,12 @@ gulp.task('lint', ()=> {
 });
 
 gulp.task('test', ['test:lint']);
+
+gulp.task('coveralls', ['test'], () => {
+  if (!process.env.CI) {
+    return;
+  }
+
+  return gulp.src(path.join(__dirname, 'coverage/lcov.info'))
+    .pipe(coveralls());
+});
