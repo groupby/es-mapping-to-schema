@@ -13,9 +13,6 @@ const DIRECT_COPY_TYPES = [
 const SANITIZATION_SCHEMA = 'sanitization';
 const VALIDATION_SCHEMA   = 'validation';
 
-// This is a Lucene limitation
-const MAX_STRING_SIZE = 32766;
-
 const RecurseMappingToSchema = (mapping, schema, schemaType, options, localOptions) => {
 
   schema = determineType(mapping, schema, schemaType, options, localOptions);
@@ -73,8 +70,8 @@ const recurseMappingObjects = (mapping, schema, schemaType, options, localOption
 };
 
 const determineType = (mapping, schema, schemaType, options, localOptions) => {
-  let mappingType = mapping.properties ? 'object' : mapping.type;
-  let type        = convertEsTypeToSchemaType(mappingType, options.isArray);
+  const mappingType = mapping.properties ? 'object' : mapping.type;
+  const type        = convertEsTypeToSchemaType(mappingType, options.isArray);
 
   if (schemaType === SANITIZATION_SCHEMA) {
     if (type && _.includes(options[schemaType].all.types, type)) {

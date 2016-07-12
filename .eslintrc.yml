@@ -1,0 +1,77 @@
+env:
+  es6: true
+  node: true
+  mocha: true
+extends: 'eslint:recommended'
+rules:
+  no-console:
+    - off
+  indent:
+    - error
+    - 2
+  linebreak-style:
+    - error
+    - unix
+  quotes:
+    - error
+    - single
+    - {avoidEscape: true}
+  semi:
+    - error
+    - always
+  no-invalid-this:
+    - error
+  no-magic-numbers:
+    - warn
+    - {ignore: [-1, 0, 1], ignoreArrayIndexes: true}
+  no-multi-spaces:
+    - error
+  no-sequences:
+    - error
+  no-warning-comments:
+    - warn
+  init-declarations:
+    - error
+    - always
+  no-shadow:
+    - error
+  no-undef:
+    - error
+  no-process-env:
+    - error
+  array-bracket-spacing:
+    - error
+  block-spacing:
+    - error
+  brace-style:
+    - error
+  comma-style:
+    - error
+  consistent-this:
+    - error
+    - self
+  keyword-spacing:
+    - error
+  no-mixed-spaces-and-tabs:
+    - error
+  no-unneeded-ternary:
+    - error
+  no-whitespace-before-property:
+    - error
+  object-curly-spacing:
+    - error
+  space-infix-ops:
+    - error
+  arrow-spacing:
+    - error
+  no-var:
+    - error
+  prefer-arrow-callback:
+    - error
+  prefer-const:
+    - warn
+  prefer-template:
+    - error
+  no-unused-vars:
+    - error
+    - {args: none}

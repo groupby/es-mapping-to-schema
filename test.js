@@ -1,6 +1,5 @@
 const chai   = require('chai');
 const expect = chai.expect;
-const _      = require('lodash');
 
 const MappingToSchema = require('./index');
 
