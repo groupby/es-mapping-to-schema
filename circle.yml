@@ -8,4 +8,4 @@ dependencies:
     - npm install --global gulp-cli
 test:
   override:
-    - gulp test
+    - gulp coverage
