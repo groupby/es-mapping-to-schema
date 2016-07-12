@@ -51,9 +51,6 @@ const lint = ()=> {
     .once('error', () => {
       console.error('lint failed');
       process.exit(1);
-    })
-    .once('end', () => {
-      process.exit();
     });
 };
 

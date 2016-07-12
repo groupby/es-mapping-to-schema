@@ -1,3 +1,5 @@
+[![Coverage Status](https://coveralls.io/repos/github/groupby/es-mapping-to-schema/badge.svg?branch=master)](https://coveralls.io/github/groupby/es-mapping-to-schema?branch=master) [![CircleCI](https://circleci.com/gh/groupby/es-mapping-to-schema.svg?style=svg)](https://circleci.com/gh/groupby/es-mapping-to-schema)
+
 ## Elasticsearch Mapping to Schema Inspector schema
 
 This allows you to convert an [elasticsearch mapping](https://www.elastic.co/guide/en/elasticsearch/reference/current/mapping.html), defined in JSON
