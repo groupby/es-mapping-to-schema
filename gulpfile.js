@@ -1,4 +1,4 @@
-/*es-lint no-process-env: "off"*/
+/*eslint no-process-env: "off"*/
 const path      = require('path');
 const gulp      = require('gulp');
 const mocha     = require('gulp-mocha');
