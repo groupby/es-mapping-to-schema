@@ -6,6 +6,7 @@ This allows you to convert an [elasticsearch mapping](https://www.elastic.co/gui
 into a schema that works with [Schema Inspector](http://atinux.github.io/schema-inspector/).
 
 ### Changelog:
+3.1 - Add ability to wildcard paths
 3.0 - Completely changed the API and output. Now offers more options, and generates separate schemas for validation and 
 sanitization. Previous version combined validation and sanitization into a single schema, with occasionally bad results.
 
@@ -136,6 +137,10 @@ const Options = {
       def: [
         {
           path: 'path.to.some.property',
+          value: 'default to this'
+        },
+        {
+          path: 'path.to.all.properties.*',
           value: 'default to this'
         }
       ]

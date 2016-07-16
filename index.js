@@ -105,7 +105,7 @@ const determineType = (mapping, schema, schemaType, options, localOptions) => {
 
 const getLocalOptions = (currentPathObjects, name) => _.reduce(currentPathObjects, (result, currentPathObject, field) => {
   _.forEach(currentPathObject, specificPath => {
-    if (specificPath.path === name) {
+    if (specificPath.path === name || specificPath.path === '*') {
       result[field] = specificPath.value;
     }
   });

@@ -230,8 +230,8 @@ describe('es-mapping-to-schema tests', ()=> {
           type: 'boolean'
         },
         selectors:    {
-          type:   'array',
-          items:  {
+          type:  'array',
+          items: {
             type:       'object',
             strict:     true,
             properties: {
@@ -332,8 +332,8 @@ describe('es-mapping-to-schema tests', ()=> {
           type: 'boolean'
         },
         selectors:    {
-          type:   'array',
-          items:  {
+          type:  'array',
+          items: {
             type:       'object',
             strict:     true,
             properties: {
@@ -1014,5 +1014,84 @@ describe('es-mapping-to-schema tests', ()=> {
 
     expect(schemas.validation).to.eql(expectedValidataionSchema);
     expect(schemas.sanitization).to.eql(expectedSanitizationSchema);
+  });
+
+  it('should apply path value to wildcarded path', ()=> {
+    const mapping = {
+      properties: {
+        booleanThing: {
+          type: 'boolean'
+        },
+        selectors:    {
+          properties: {
+            name:  {
+              type: 'string'
+            },
+            value: {
+              type: 'string'
+            }
+          }
+        }
+      }
+    };
+
+    const expectedSchema = {
+      type:       'object',
+      properties: {
+        booleanThing: {
+          type: 'boolean'
+        },
+        selectors:    {
+          type:       'object',
+          properties: {
+            name:  {
+              something: 'wildcard',
+              type:      'string'
+            },
+            value: {
+              something: 'wildcard',
+              type:      'string'
+            }
+          }
+        }
+      }
+    };
+
+    const schemas = MappingToSchema(mapping, {
+      validation:   {
+        paths: {
+          something: [
+            {
+              path:  'selectors.*',
+              value: 'wildcard'
+            }
+          ]
+        }
+      },
+      sanitization: {
+        all:   {
+          types: [
+            'object',
+            'string',
+            'integer',
+            'number',
+            'array',
+            'boolean',
+            'date'
+          ]
+        },
+        paths: {
+          something: [
+            {
+              path:  'selectors.*',
+              value: 'wildcard'
+            }
+          ]
+        }
+      }
+    });
+
+    expect(schemas.validation).to.eql(expectedSchema);
+    expect(schemas.sanitization).to.eql(expectedSchema);
   });
 });
