@@ -46,16 +46,20 @@ const recurseMappingObjects = (mapping, schema, schemaType, options, localOption
 
   if (mapping.properties || mapping.type === 'object' || mapping.type === 'nested') {
     if (options.isArray) {
-      schema.items = {
-        type:       'object',
-        properties: RecurseMappingToSchema(mapping.properties, {}, schemaType, options, {})
-      };
+      schema.items      = {};
+      schema.items.type = 'object';
+
+      if (mapping.properties) {
+        schema.items.properties = RecurseMappingToSchema(mapping.properties, {}, schemaType, options, {});
+      }
 
       if (strict) {
         schema.items.strict = true;
       }
     } else {
-      schema.properties = RecurseMappingToSchema(mapping.properties, {}, schemaType, options, {});
+      if (mapping.properties) {
+        schema.properties = RecurseMappingToSchema(mapping.properties, {}, schemaType, options, {});
+      }
 
       if (strict) {
         schema.strict = true;
