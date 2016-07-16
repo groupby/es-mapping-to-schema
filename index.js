@@ -45,14 +45,21 @@ const recurseMappingObjects = (mapping, schema, schemaType, options, localOption
   const strict   = localOptions.strict || options[schemaType].all.strict;
 
   if (mapping.properties || mapping.type === 'object' || mapping.type === 'nested') {
-    const fieldName = options.isArray ? 'items' : 'properties';
+    if (options.isArray) {
+      schema.items = {
+        type:       'object',
+        properties: RecurseMappingToSchema(mapping.properties, {}, schemaType, options, {})
+      };
 
-    if (mapping.properties) {
-      schema[fieldName] = RecurseMappingToSchema(mapping.properties, {}, schemaType, options, {});
-    }
+      if (strict) {
+        schema.items.strict = true;
+      }
+    } else {
+      schema.properties = RecurseMappingToSchema(mapping.properties, {}, schemaType, options, {});
 
-    if (strict) {
-      schema.strict = true;
+      if (strict) {
+        schema.strict = true;
+      }
     }
   }
 

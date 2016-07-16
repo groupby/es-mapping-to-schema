@@ -1,5 +1,6 @@
-const chai   = require('chai');
-const expect = chai.expect;
+const chai      = require('chai');
+const expect    = chai.expect;
+const inspector = require('schema-inspector');
 
 const MappingToSchema = require('./index');
 
@@ -202,7 +203,105 @@ describe('es-mapping-to-schema tests', ()=> {
     expect(schemas.sanitization).to.eql(expectedSchema);
   });
 
-  it('should convert a mapping with an array into validation and sanization schemas', () => {
+  it('should convert a mapping with an array non-objects', ()=> {
+    const mapping = {
+      properties: {
+        booleanThing: {
+          type: 'boolean'
+        },
+        selectors:    {
+          properties: {
+            name:  {
+              type: 'string'
+            },
+            value: {
+              type: 'string'
+            }
+          }
+        }
+      }
+    };
+
+    const expectedSchema = {
+      type:       'object',
+      strict:     true,
+      properties: {
+        booleanThing: {
+          type: 'boolean'
+        },
+        selectors:    {
+          type:   'array',
+          items:  {
+            type:       'object',
+            strict:     true,
+            properties: {
+              name:  {
+                type: 'string'
+              },
+              value: {
+                type: 'string'
+              }
+            }
+          }
+        }
+      }
+    };
+
+    const schemas = MappingToSchema(mapping, {
+      arrayPaths:   [
+        'selectors'
+      ],
+      sanitization: {
+        all: {
+          strict: true,
+          types:  [
+            'object',
+            'string',
+            'integer',
+            'number',
+            'array',
+            'boolean',
+            'date'
+          ]
+        }
+      },
+      validation:   {
+        all: {
+          strict: true
+        }
+      }
+    });
+
+    expect(schemas.validation).to.eql(expectedSchema);
+    expect(schemas.sanitization).to.eql(expectedSchema);
+
+    const shouldPass = {
+      booleanThing: true,
+      selectors:    [
+        {
+          name:  'thing',
+          value: 'other'
+        }
+      ]
+    };
+
+    expect(inspector.validate(schemas.validation, shouldPass).valid).to.eql(true);
+
+    const shouldFail = {
+      booleanThing: true,
+      selectors:    [
+        {
+          name:  'thing',
+          value: 'other',
+          extra: 'this'
+        }
+      ]
+    };
+
+    expect(inspector.validate(schemas.validation, shouldFail).valid).to.eql(false);
+  });
+
+  it('should convert a mapping with an array of objects into schemas', () => {
     const mapping = {
       properties: {
         booleanThing: {
@@ -227,21 +326,27 @@ describe('es-mapping-to-schema tests', ()=> {
 
     const expectedSchema = {
       type:       'object',
+      strict:     true,
       properties: {
         booleanThing: {
           type: 'boolean'
         },
         selectors:    {
-          type:  'array',
-          items: {
-            selector: {
-              type:       'object',
-              properties: {
-                name:  {
-                  type: 'string'
-                },
-                value: {
-                  type: 'string'
+          type:   'array',
+          items:  {
+            type:       'object',
+            strict:     true,
+            properties: {
+              selector: {
+                type:       'object',
+                strict:     true,
+                properties: {
+                  name:  {
+                    type: 'string'
+                  },
+                  value: {
+                    type: 'string'
+                  }
                 }
               }
             }
@@ -256,7 +361,8 @@ describe('es-mapping-to-schema tests', ()=> {
       ],
       sanitization: {
         all: {
-          types: [
+          strict: true,
+          types:  [
             'object',
             'string',
             'integer',
@@ -266,11 +372,45 @@ describe('es-mapping-to-schema tests', ()=> {
             'date'
           ]
         }
+      },
+      validation:   {
+        all: {
+          strict: true
+        }
       }
     });
 
     expect(schemas.validation).to.eql(expectedSchema);
     expect(schemas.sanitization).to.eql(expectedSchema);
+
+    const shouldPass = {
+      booleanThing: true,
+      selectors:    [
+        {
+          selector: {
+            name:  'thing',
+            value: 'other'
+          }
+        }
+      ]
+    };
+
+    expect(inspector.validate(schemas.validation, shouldPass).valid).to.eql(true);
+
+    const shouldFail = {
+      booleanThing: true,
+      selectors:    [
+        {
+          selector: {
+            name:  'thing',
+            value: 'other'
+          },
+          extra:    'this'
+        }
+      ]
+    };
+
+    expect(inspector.validate(schemas.validation, shouldFail).valid).to.eql(false);
   });
 
   it('should convert a mapping into a schema with optional properties', () => {
@@ -734,23 +874,23 @@ describe('es-mapping-to-schema tests', ()=> {
 
   it('should shorten all paths by one level', () => {
     const paths = {
-      def: [
+      def:      [
         {
-          path: 'something.yo.this',
+          path:  'something.yo.this',
           value: true
         },
         {
-          path: 'something.alkf.asfd',
+          path:  'something.alkf.asfd',
           value: 'ddd'
         },
         {
-          path: 'gone',
+          path:  'gone',
           value: 'asfdsd'
         }
       ],
       optional: [
         {
-          path: 'other.that.wer',
+          path:  'other.that.wer',
           value: 2393
         }
       ]
@@ -759,40 +899,40 @@ describe('es-mapping-to-schema tests', ()=> {
     const shortenedPaths = MappingToSchema.__nextPaths(paths);
 
     expect(shortenedPaths).to.eql({
-      def: [
+      def:      [
         {
-          path: 'yo.this',
+          path:  'yo.this',
           value: true
         },
         {
-          path: 'alkf.asfd',
+          path:  'alkf.asfd',
           value: 'ddd'
         }
       ],
       optional: [
         {
-          path: 'that.wer',
+          path:  'that.wer',
           value: 2393
         }
       ]
     });
   });
 
-  it('should return the options applicable to a specific field', ()=>{
+  it('should return the options applicable to a specific field', ()=> {
     const paths = {
-      def: [
+      def:      [
         {
-          path: 'something.yo.this',
+          path:  'something.yo.this',
           value: true
         },
         {
-          path: 'onTarget',
+          path:  'onTarget',
           value: 'asfdsd'
         }
       ],
       optional: [
         {
-          path: 'onTarget',
+          path:  'onTarget',
           value: 2393
         }
       ]
@@ -801,7 +941,7 @@ describe('es-mapping-to-schema tests', ()=> {
     const localOptions = MappingToSchema.__getLocalOptions(paths, 'onTarget');
 
     expect(localOptions).to.eql({
-      def: 'asfdsd',
+      def:      'asfdsd',
       optional: 2393
     });
   });
@@ -875,4 +1015,6 @@ describe('es-mapping-to-schema tests', ()=> {
     expect(schemas.validation).to.eql(expectedValidataionSchema);
     expect(schemas.sanitization).to.eql(expectedSanitizationSchema);
   });
+
+
 });
