@@ -51,18 +51,18 @@ const recurseMappingObjects = (mapping, schema, schemaType, options, localOption
 
       if (mapping.properties) {
         schema.items.properties = RecurseMappingToSchema(mapping.properties, {}, schemaType, options, {});
-      }
 
-      if (strict) {
-        schema.items.strict = true;
+        if (strict) {
+          schema.items.strict = true;
+        }
       }
     } else {
       if (mapping.properties) {
         schema.properties = RecurseMappingToSchema(mapping.properties, {}, schemaType, options, {});
-      }
 
-      if (strict) {
-        schema.strict = true;
+        if (strict) {
+          schema.strict = true;
+        }
       }
     }
   }

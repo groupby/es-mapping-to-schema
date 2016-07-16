@@ -1015,6 +1015,4 @@ describe('es-mapping-to-schema tests', ()=> {
     expect(schemas.validation).to.eql(expectedValidataionSchema);
     expect(schemas.sanitization).to.eql(expectedSanitizationSchema);
   });
-
-
 });
