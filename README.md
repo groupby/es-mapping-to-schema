@@ -7,6 +7,7 @@ into a schema that works with [Schema Inspector](http://atinux.github.io/schema-
 
 ### Changelog:
 3.1 - Add ability to wildcard paths
+
 3.0 - Completely changed the API and output. Now offers more options, and generates separate schemas for validation and 
 sanitization. Previous version combined validation and sanitization into a single schema, with occasionally bad results.
 
