@@ -1,0 +1,3 @@
+github:
+  usernameEnvVar: DOCKER_GITHUB_USER
+  codeEnvVar: DOCKER_GITHUB_CODE
