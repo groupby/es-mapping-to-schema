@@ -1016,6 +1016,60 @@ describe('es-mapping-to-schema tests', ()=> {
     expect(schemas.sanitization).to.eql(expectedSanitizationSchema);
   });
 
+  it('should throw if the root object does not have a type or properties field', ()=> {
+    const mapping = {
+      thing: {
+        type: 'string'
+      }
+    };
+
+    expect(() => MappingToSchema(mapping)).to.throw(/must have 'type' or 'properties' field/);
+  });
+
+  it('should handle mappings with properties named "type" or "properties"', ()=> {
+    const mapping = {
+      properties: {
+        type: {
+          type: 'string'
+        },
+        properties: {
+          type: 'string'
+        },
+        notType: {
+          type: 'string'
+        }
+      }
+    };
+
+    const expectedValidataionSchema = {
+      type:       'object',
+      properties: {
+        type: {
+          type: 'string'
+        },
+        properties: {
+          type: 'string'
+        },
+        notType: {
+          type: 'string'
+        }
+      }
+    };
+
+    const expectedSanitizationSchema = {
+      properties: {
+        type: {},
+        properties: {},
+        notType: {}
+      }
+    };
+
+    const schemas = MappingToSchema(mapping);
+
+    expect(schemas.validation).to.eql(expectedValidataionSchema);
+    expect(schemas.sanitization).to.eql(expectedSanitizationSchema);
+  });
+
   it('should apply path value to wildcarded path', ()=> {
     const mapping = {
       properties: {

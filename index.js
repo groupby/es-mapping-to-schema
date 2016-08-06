@@ -13,17 +13,6 @@ const DIRECT_COPY_TYPES = [
 const SANITIZATION_SCHEMA = 'sanitization';
 const VALIDATION_SCHEMA   = 'validation';
 
-const RecurseMappingToSchema = (mapping, schema, schemaType, options, localOptions) => {
-
-  schema = determineType(mapping, schema, schemaType, options, localOptions);
-
-  if (mapping.properties || mapping.type) {
-    return recurseMappingObjects(mapping, schema, schemaType, options, localOptions);
-  } else {
-    return recurseMappingProperties(mapping, schema, schemaType, options);
-  }
-};
-
 const recurseMappingProperties = (mapping, schema, schemaType, options) => {
   const nextOptions             = _.cloneDeep(options);
   nextOptions[schemaType].paths = nextPaths(nextOptions[schemaType].paths);
@@ -33,8 +22,8 @@ const recurseMappingProperties = (mapping, schema, schemaType, options) => {
     const nextLocalOptions = getLocalOptions(options[schemaType].paths, name);
     nextOptions.isArray    = _.includes(options.arrayPaths, name);
 
-    schema[name] = {};
-    result[name] = RecurseMappingToSchema(mapping[name], schema[name], schemaType, nextOptions, nextLocalOptions);
+    schema[name] = determineType(mapping[name], {}, schemaType, nextOptions);
+    result[name] = recurseMappingObjects(mapping[name], schema[name], schemaType, nextOptions, nextLocalOptions);
 
     return result;
   }, {});
@@ -50,7 +39,8 @@ const recurseMappingObjects = (mapping, schema, schemaType, options, localOption
       schema.items.type = 'object';
 
       if (mapping.properties) {
-        schema.items.properties = RecurseMappingToSchema(mapping.properties, {}, schemaType, options, {});
+        const nextSchema        = determineType(mapping.properties, {}, schemaType, options);
+        schema.items.properties = recurseMappingProperties(mapping.properties, nextSchema, schemaType, options, {});
 
         if (strict) {
           schema.items.strict = true;
@@ -58,7 +48,8 @@ const recurseMappingObjects = (mapping, schema, schemaType, options, localOption
       }
     } else {
       if (mapping.properties) {
-        schema.properties = RecurseMappingToSchema(mapping.properties, {}, schemaType, options, {});
+        const nextSchema  = determineType(mapping.properties, {}, schemaType, options);
+        schema.properties = recurseMappingProperties(mapping.properties, nextSchema, schemaType, options, {});
 
         if (strict) {
           schema.strict = true;
@@ -78,7 +69,7 @@ const recurseMappingObjects = (mapping, schema, schemaType, options, localOption
   return schema;
 };
 
-const determineType = (mapping, schema, schemaType, options, localOptions) => {
+const determineType = (mapping, schema, schemaType, options) => {
   const mappingType = mapping.properties ? 'object' : mapping.type;
   const type        = convertEsTypeToSchemaType(mappingType, options.isArray);
 
@@ -138,14 +129,21 @@ const shortenArrayPaths = currentPaths => _.reduce(currentPaths, (result, curren
 }, []);
 
 const MappingToSchema = (mapping, options) => {
+  if (!_.isString(mapping.type) && !_.isObject(mapping.properties)) {
+    throw new Error(`root of mapping must have 'type' or 'properties' fields`);
+  }
+
   options = options || {};
   options = new Options(options);
 
   options = _.defaultsDeep(options, DEFAULTS);
 
+  const baseValidationSchema   = determineType(mapping, {}, VALIDATION_SCHEMA, options);
+  const baseSanitizationSchema = determineType(mapping, {}, SANITIZATION_SCHEMA, options);
+
   return {
-    validation:   RecurseMappingToSchema(mapping, {}, VALIDATION_SCHEMA, options, {}),
-    sanitization: RecurseMappingToSchema(mapping, {}, SANITIZATION_SCHEMA, options, {})
+    validation:   recurseMappingObjects(mapping, baseValidationSchema, VALIDATION_SCHEMA, options, {}),
+    sanitization: recurseMappingObjects(mapping, baseSanitizationSchema, SANITIZATION_SCHEMA, options, {})
   };
 };
 
