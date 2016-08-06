@@ -8,10 +8,7 @@ dependencies:
     - npm install --global gulp-cli
 test:
   override:
-    - ls -al .git/refs/heads/
-    - git pull origin master
-    - ls -al .git/refs/heads/
-    - gulp coveralls
+    - gulp test
 deployment:
   npm:
     tag: /v[0-9]+(\.[0-9]+)*/
