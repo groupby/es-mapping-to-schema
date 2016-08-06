@@ -9,7 +9,7 @@ dependencies:
 test:
   override:
     - ls -al .git/refs/heads/
-    - git fetch origin master
+    - git pull origin master
     - ls -al .git/refs/heads/
     - gulp coveralls
 deployment:
