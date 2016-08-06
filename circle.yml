@@ -8,7 +8,9 @@ dependencies:
     - npm install --global gulp-cli
 test:
   override:
-    - git fetch
+    - ls -al .git/refs/heads/
+    - git fetch origin master
+    - ls -al .git/refs/heads/
     - gulp coveralls
 deployment:
   npm:
