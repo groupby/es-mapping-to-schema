@@ -39,8 +39,7 @@ const recurseMappingObjects = (mapping, schema, schemaType, options, localOption
       schema.items.type = 'object';
 
       if (mapping.properties) {
-        const nextSchema        = determineType(mapping.properties, {}, schemaType, options);
-        schema.items.properties = recurseMappingProperties(mapping.properties, nextSchema, schemaType, options, {});
+        schema.items.properties = recurseMappingProperties(mapping.properties, {}, schemaType, options, {});
 
         if (strict) {
           schema.items.strict = true;
@@ -48,8 +47,7 @@ const recurseMappingObjects = (mapping, schema, schemaType, options, localOption
       }
     } else {
       if (mapping.properties) {
-        const nextSchema  = determineType(mapping.properties, {}, schemaType, options);
-        schema.properties = recurseMappingProperties(mapping.properties, nextSchema, schemaType, options, {});
+        schema.properties = recurseMappingProperties(mapping.properties, {}, schemaType, options, {});
 
         if (strict) {
           schema.strict = true;
@@ -164,7 +162,7 @@ const convertEsTypeToSchemaType = (type, isArray) => {
       case undefined:
         return null;
       default:
-        console.log(`mapping type: ${type} is unsupported and will be ignored`);
+        console.warn(`mapping type: ${_.isObject(type) ? JSON.stringify(type, null, 2) : type} is unsupported and will be ignored`);
         return null;
     }
   }
