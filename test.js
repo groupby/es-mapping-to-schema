@@ -1215,4 +1215,47 @@ describe('es-mapping-to-schema tests', ()=> {
 
     expect(picked).to.eql(expectedPicked);
   });
+
+  it('should allow arrays of simple objects', () => {
+    const mapping = {
+      properties: {
+        arrayOfStrings: {
+          type: 'string'
+        }
+      }
+    };
+
+    const expectedSchema = {
+      type: 'object',
+      properties: {
+        arrayOfStrings: {
+          type:  'array',
+          items: {
+            type: 'string'
+          }
+        }
+      }
+    };
+
+    const schemas = MappingToSchema(mapping, {
+      arrayPaths:   [
+        'arrayOfStrings'
+      ],
+      sanitization: {
+        all: {
+          types:  [
+            'object',
+            'string',
+            'integer',
+            'number',
+            'array',
+            'boolean',
+            'date'
+          ]
+        }
+      }
+    });
+
+    expect(schemas.validation).to.eql(expectedSchema);
+  });
 });

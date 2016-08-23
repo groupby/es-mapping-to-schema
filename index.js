@@ -26,8 +26,12 @@ const recurseMappingProperties = (mapping, schema, schemaType, options) => {
     const nextLocalOptions = getLocalOptions(options[schemaType].paths, name);
     nextOptions.isArray    = _.includes(options.arrayPaths, name);
 
-    schema[name] = determineType(mapping[name], {}, schemaType, nextOptions);
-    result[name] = recurseMappingObjects(mapping[name], schema[name], schemaType, nextOptions, nextLocalOptions);
+    // if (nextOptions.isArray) {
+    //   console.log('name: ' + name);
+    // } else {
+      schema[name] = determineType(mapping[name], {}, schemaType, nextOptions);
+      result[name] = recurseMappingObjects(mapping[name], schema[name], schemaType, nextOptions, nextLocalOptions);
+    // }
 
     return result;
   }, {});
@@ -37,10 +41,10 @@ const recurseMappingObjects = (mapping, schema, schemaType, options, localOption
   const optional = localOptions.optional || options[schemaType].all.optional;
   const strict   = localOptions.strict || options[schemaType].all.strict;
 
-  if (mapping.properties || mapping.type === 'object' || mapping.type === 'nested') {
+  if (mapping.properties || mapping.type === 'object' || mapping.type === 'nested' || options.isArray) {
     if (options.isArray) {
       schema.items      = {};
-      schema.items.type = 'object';
+      schema.items.type = determineType(mapping, {}, schemaType, Object.assign({}, options, {isArray:  false})).type;
 
       if (mapping.properties) {
         schema.items.properties = recurseMappingProperties(mapping.properties, {}, schemaType, options, {});
@@ -159,7 +163,7 @@ const MappingToSchema = (mapping, options) => {
 
 const convertEsTypeToSchemaType = (type, isArray) => {
   if (_.includes(DIRECT_COPY_TYPES, type)) {
-    return type === 'object' && isArray ? 'array' : type;
+    return isArray ? 'array' : type;
   } else {
     switch (type) {
       case 'nested':
