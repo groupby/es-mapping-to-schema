@@ -14,11 +14,15 @@ const SANITIZATION_SCHEMA = 'sanitization';
 const VALIDATION_SCHEMA   = 'validation';
 
 const recurseMappingProperties = (mapping, schema, schemaType, options) => {
-  const nextOptions             = _.cloneDeep(options);
-  nextOptions[schemaType].paths = nextPaths(nextOptions[schemaType].paths);
-  nextOptions.arrayPaths        = shortenArrayPaths(nextOptions.arrayPaths);
-
   return _.reduce(mapping, (result, property, name) => {
+    const nextOptions             = _.cloneDeep(options);
+    // Pull out only the paths that are relevant to this object
+    nextOptions[schemaType].paths = pickPaths(nextOptions[schemaType].paths, name);
+
+    // Shift paths
+    nextOptions[schemaType].paths = nextPaths(nextOptions[schemaType].paths);
+    nextOptions.arrayPaths        = shortenArrayPaths(nextOptions.arrayPaths);
+
     const nextLocalOptions = getLocalOptions(options[schemaType].paths, name);
     nextOptions.isArray    = _.includes(options.arrayPaths, name);
 
@@ -102,6 +106,13 @@ const getLocalOptions = (currentPathObjects, name) => _.reduce(currentPathObject
   return result;
 }, {});
 
+const pickPaths = (currentPathObjects, pickProperty) => {
+  return _.reduce(currentPathObjects, (resultingPathObjects, currentPathObject, name) => {
+    resultingPathObjects[name] = _.filter(currentPathObject, (currentPath) => _.startsWith(currentPath.path, pickProperty));
+    return resultingPathObjects;
+  }, {});
+};
+
 const nextPaths = currentPathObjects => _.reduce(currentPathObjects, (result, currentPathObject, field) => {
   result[field] = shortenPaths(currentPathObject);
   return result;
@@ -145,6 +156,7 @@ const MappingToSchema = (mapping, options) => {
   };
 };
 
+
 const convertEsTypeToSchemaType = (type, isArray) => {
   if (_.includes(DIRECT_COPY_TYPES, type)) {
     return type === 'object' && isArray ? 'array' : type;
@@ -185,6 +197,7 @@ const DEFAULTS = {
   }
 };
 
+MappingToSchema.__pickPaths       = pickPaths;
 MappingToSchema.__nextPaths       = nextPaths;
 MappingToSchema.__getLocalOptions = getLocalOptions;
 

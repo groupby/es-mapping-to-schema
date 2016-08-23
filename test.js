@@ -1029,13 +1029,13 @@ describe('es-mapping-to-schema tests', ()=> {
   it('should handle mappings with properties named "type" or "properties"', ()=> {
     const mapping = {
       properties: {
-        type: {
+        type:       {
           type: 'string'
         },
         properties: {
           type: 'string'
         },
-        notType: {
+        notType:    {
           type: 'string'
         }
       }
@@ -1044,13 +1044,13 @@ describe('es-mapping-to-schema tests', ()=> {
     const expectedValidataionSchema = {
       type:       'object',
       properties: {
-        type: {
+        type:       {
           type: 'string'
         },
         properties: {
           type: 'string'
         },
-        notType: {
+        notType:    {
           type: 'string'
         }
       }
@@ -1058,9 +1058,9 @@ describe('es-mapping-to-schema tests', ()=> {
 
     const expectedSanitizationSchema = {
       properties: {
-        type: {},
+        type:       {},
         properties: {},
-        notType: {}
+        notType:    {}
       }
     };
 
@@ -1085,6 +1085,13 @@ describe('es-mapping-to-schema tests', ()=> {
               type: 'string'
             }
           }
+        },
+        notSelectors: {
+          properties: {
+            foo: {
+              type: 'double'
+            }
+          }
         }
       }
     };
@@ -1107,6 +1114,14 @@ describe('es-mapping-to-schema tests', ()=> {
               type:      'string'
             }
           }
+        },
+        notSelectors: {
+          properties: {
+            foo: {
+              type: 'number'
+            }
+          },
+          type:       'object'
         }
       }
     };
@@ -1147,5 +1162,57 @@ describe('es-mapping-to-schema tests', ()=> {
 
     expect(schemas.validation).to.eql(expectedSchema);
     expect(schemas.sanitization).to.eql(expectedSchema);
+  });
+
+  it('should filter down to only the paths that start with the target property', () => {
+    const paths = {
+      strict:   [
+        {
+          path:  'selectors.something',
+          value: true
+        },
+        {
+          path:  'notSelectors',
+          value: true
+        },
+        {
+          path:  'notSelectors.somethingElse',
+          value: true
+        }
+      ],
+      optional: [
+        {
+          path:  'selectors.something',
+          value: true
+        },
+        {
+          path:  'notSelectors',
+          value: true
+        },
+        {
+          path:  'notSelectors.somethingElse',
+          value: true
+        }
+      ]
+    };
+
+    const expectedPicked = {
+      strict:   [
+        {
+          path:  'selectors.something',
+          value: true
+        }
+      ],
+      optional: [
+        {
+          path:  'selectors.something',
+          value: true
+        }
+      ]
+    };
+
+    const picked = MappingToSchema.__pickPaths(paths, 'selectors');
+
+    expect(picked).to.eql(expectedPicked);
   });
 });
