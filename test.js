@@ -1226,7 +1226,7 @@ describe('es-mapping-to-schema tests', ()=> {
     };
 
     const expectedSchema = {
-      type: 'object',
+      type:       'object',
       properties: {
         arrayOfStrings: {
           type:  'array',
@@ -1243,7 +1243,7 @@ describe('es-mapping-to-schema tests', ()=> {
       ],
       sanitization: {
         all: {
-          types:  [
+          types: [
             'object',
             'string',
             'integer',
@@ -1257,5 +1257,78 @@ describe('es-mapping-to-schema tests', ()=> {
     });
 
     expect(schemas.validation).to.eql(expectedSchema);
+  });
+
+  it('should apply rules to all string mappings', () => {
+    const mapping = {
+      properties: {
+        someValue:  {
+          type: 'integer'
+        },
+        someString: {
+          type: 'string'
+        },
+        deeper:     {
+          properties: {
+            anotherString: {
+              type: 'string'
+            },
+            aNumber:       {
+              type: 'double'
+            }
+          }
+        }
+      }
+    };
+
+    const expectedSchema = {
+      type:       'object',
+      properties: {
+        someValue:  {
+          type: 'integer'
+        },
+        someString: {
+          rules: [
+            'trim',
+            'lower'
+          ]
+        },
+        deeper:     {
+          type:       'object',
+          properties: {
+            anotherString: {
+              rules: [
+                'trim',
+                'lower'
+              ]
+            },
+            aNumber:       {
+              type: 'number'
+            }
+          }
+        }
+      }
+    };
+
+    const schemas = MappingToSchema(mapping, {
+      sanitization: {
+        all: {
+          types: [
+            'object',
+            'integer',
+            'number',
+            'array',
+            'boolean',
+            'date'
+          ],
+          rules: [
+            'trim',
+            'lower'
+          ]
+        }
+      }
+    });
+
+    expect(schemas.sanitization).to.eql(expectedSchema);
   });
 });
