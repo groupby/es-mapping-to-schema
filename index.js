@@ -80,7 +80,7 @@ const determineType = (mapping, schema, schemaType, options) => {
       schema.type = type;
     }
 
-    if (schema.type === 'string' && options[schemaType].all.maxLength) {
+    if (options[schemaType].all.maxLength && mapping.type === 'string') {
       schema.maxLength = options[schemaType].all.maxLength;
     }
 

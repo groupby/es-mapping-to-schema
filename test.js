@@ -1259,6 +1259,38 @@ describe('es-mapping-to-schema tests', ()=> {
     expect(schemas.validation).to.eql(expectedSchema);
   });
 
+  it('should apply maxLength sanitization to all strings', () => {
+    const mapping = {
+      properties: {
+        someString: {
+          type: 'string'
+        },
+        someInt: {
+          type: 'integer'
+        }
+      }
+    };
+
+    const expectedSchema = {
+      properties: {
+        someString: {
+          maxLength: 20
+        },
+        someInt: {}
+      }
+    };
+
+    const schemas = MappingToSchema(mapping, {
+      sanitization: {
+        all: {
+          maxLength: 20
+        }
+      }
+    });
+
+    expect(schemas.sanitization).to.eql(expectedSchema);
+  });
+
   it('should apply rules to all string mappings', () => {
     const mapping = {
       properties: {
