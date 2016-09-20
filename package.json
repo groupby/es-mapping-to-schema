@@ -1,6 +1,6 @@
 {
   "name": "es-mapping-to-schema",
-  "version": "3.3.2",
+  "version": "3.3.3",
   "description": "Convert Elasticsearch mappings to Schema Inspector schemas",
   "main": "index.js",
   "scripts": {
