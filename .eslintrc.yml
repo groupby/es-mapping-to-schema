@@ -4,8 +4,9 @@ env:
   mocha: true
 extends: 'eslint:recommended'
 rules:
-  no-console:
-    - off
+  key-spacing:
+    - warn
+    - {align: value}
   indent:
     - error
     - 2
@@ -21,11 +22,13 @@ rules:
     - always
   no-invalid-this:
     - error
+  no-console:
+    - off
   no-magic-numbers:
-    - warn
-    - {ignore: [-1, 0, 1], ignoreArrayIndexes: true}
+    - off
   no-multi-spaces:
     - error
+    - {exceptions: {VariableDeclarator: true, ImportDeclaration: true}}
   no-sequences:
     - error
   no-warning-comments:
@@ -62,6 +65,9 @@ rules:
     - error
   space-infix-ops:
     - error
+  arrow-parens:
+    - error
+    - always
   arrow-spacing:
     - error
   no-var:
@@ -72,6 +78,3 @@ rules:
     - warn
   prefer-template:
     - error
-  no-unused-vars:
-    - error
-    - {args: none}

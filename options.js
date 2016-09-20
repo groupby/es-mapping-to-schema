@@ -5,23 +5,23 @@ const VALIDATION_SCHEMA = {
   type:       'object',
   strict:     true,
   properties: {
-    arrayPaths:   {
+    arrayPaths: {
       optional: true,
       type:     'array',
       items:    {
         type: 'string'
       }
     },
-    validation:   {
+    validation: {
       optional:   true,
       type:       'object',
       strict:     true,
       properties: {
-        all:   {
+        all: {
           optional:   true,
           type:       'object',
           properties: {
-            strict:   {
+            strict: {
               optional: true,
               type:     'boolean'
             },
@@ -40,7 +40,7 @@ const VALIDATION_SCHEMA = {
               items: {
                 type:       'object',
                 properties: {
-                  path:  {
+                  path: {
                     type: 'string'
                   },
                   value: {
@@ -58,16 +58,16 @@ const VALIDATION_SCHEMA = {
       type:       'object',
       strict:     true,
       properties: {
-        all:   {
+        all: {
           optional:   true,
           type:       'object',
           strict:     true,
           properties: {
-            strict:    {
+            strict: {
               optional: true,
               type:     'boolean'
             },
-            rules:     {
+            rules: {
               optional: true,
               type:     'array'
             },
@@ -76,7 +76,7 @@ const VALIDATION_SCHEMA = {
               type:     'integer',
               gte:      0
             },
-            types:     {
+            types: {
               optional: true,
               type:     'array',
               items:    {
@@ -94,7 +94,7 @@ const VALIDATION_SCHEMA = {
               items: {
                 type:       'object',
                 properties: {
-                  path:  {
+                  path: {
                     type: 'string'
                   },
                   value: {
@@ -112,7 +112,7 @@ const VALIDATION_SCHEMA = {
 
 const Options = function (params) {
   const self = this;
-  params     = _.cloneDeep(params);
+  params = _.cloneDeep(params);
 
   const result = inspector.validate(VALIDATION_SCHEMA, params);
 

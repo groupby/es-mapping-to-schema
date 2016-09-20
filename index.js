@@ -21,10 +21,10 @@ const recurseMappingProperties = (mapping, schema, schemaType, options) => {
 
     // Shift paths
     nextOptions[schemaType].paths = nextPaths(nextOptions[schemaType].paths);
-    nextOptions.arrayPaths        = shortenArrayPaths(nextOptions.arrayPaths);
+    nextOptions.arrayPaths = shortenArrayPaths(nextOptions.arrayPaths);
 
     const nextLocalOptions = getLocalOptions(options[schemaType].paths, name);
-    nextOptions.isArray    = _.includes(options.arrayPaths, name);
+    nextOptions.isArray = _.includes(options.arrayPaths, name);
 
     schema[name] = determineType(mapping[name], {}, schemaType, nextOptions);
     result[name] = recurseMappingObjects(mapping[name], schema[name], schemaType, nextOptions, nextLocalOptions);
@@ -39,7 +39,7 @@ const recurseMappingObjects = (mapping, schema, schemaType, options, localOption
 
   if (mapping.properties || mapping.type === 'object' || mapping.type === 'nested' || options.isArray) {
     if (options.isArray) {
-      schema.items      = {};
+      schema.items = {};
       schema.items.type = determineType(mapping, {}, schemaType, Object.assign({}, options, {isArray: false})).type;
 
       if (mapping.properties) {
@@ -99,7 +99,7 @@ const determineType = (mapping, schema, schemaType, options) => {
 };
 
 const getLocalOptions = (currentPathObjects, name) => _.reduce(currentPathObjects, (result, currentPathObject, field) => {
-  _.forEach(currentPathObject, specificPath => {
+  _.forEach(currentPathObject, (specificPath) => {
     if (specificPath.path === name || specificPath.path === '*') {
       result[field] = specificPath.value;
     }
@@ -115,12 +115,12 @@ const pickPaths = (currentPathObjects, pickProperty) => {
   }, {});
 };
 
-const nextPaths = currentPathObjects => _.reduce(currentPathObjects, (result, currentPathObject, field) => {
+const nextPaths = (currentPathObjects) => _.reduce(currentPathObjects, (result, currentPathObject, field) => {
   result[field] = shortenPaths(currentPathObject);
   return result;
 }, {});
 
-const shortenPaths = currentPaths => _.reduce(currentPaths, (result, currentPath) => {
+const shortenPaths = (currentPaths) => _.reduce(currentPaths, (result, currentPath) => {
   const nextPath = _.join(_.drop(_.split(currentPath.path, '.'), 1), '.');
   if (nextPath.length > 0) {
     result.push({
@@ -131,7 +131,7 @@ const shortenPaths = currentPaths => _.reduce(currentPaths, (result, currentPath
   return result;
 }, []);
 
-const shortenArrayPaths = currentPaths => _.reduce(currentPaths, (result, currentPath) => {
+const shortenArrayPaths = (currentPaths) => _.reduce(currentPaths, (result, currentPath) => {
   const nextPath = _.join(_.drop(_.split(currentPath, '.'), 1), '.');
   if (nextPath.length > 0) {
     result.push(nextPath);
@@ -141,7 +141,7 @@ const shortenArrayPaths = currentPaths => _.reduce(currentPaths, (result, curren
 
 const MappingToSchema = (mapping, options) => {
   if (!_.isString(mapping.type) && !_.isObject(mapping.properties)) {
-    throw new Error(`root of mapping must have 'type' or 'properties' fields`);
+    throw new Error('root of mapping must have \'type\' or \'properties\' fields');
   }
 
   options = options || {};
@@ -164,43 +164,43 @@ const convertEsTypeToSchemaType = (type, isArray) => {
     return isArray ? 'array' : type;
   } else {
     switch (type) {
-      case 'nested':
-        return isArray ? 'array' : 'object';
-      case 'double':
-      case 'float':
-        return 'number';
-      case 'long':
-      case 'short':
-      case 'byte':
-        return 'integer';
-      case undefined:
-        return null;
-      default:
-        console.warn(`mapping type: ${_.isObject(type) ? JSON.stringify(type, null, 2) : type} is unsupported and will be ignored`);
-        return null;
+    case 'nested':
+      return isArray ? 'array' : 'object';
+    case 'double':
+    case 'float':
+      return 'number';
+    case 'long':
+    case 'short':
+    case 'byte':
+      return 'integer';
+    case undefined:
+      return null;
+    default:
+      console.warn(`mapping type: ${_.isObject(type) ? JSON.stringify(type, null, 2) : type} is unsupported and will be ignored`);
+      return null;
     }
   }
 };
 
 const DEFAULTS = {
-  arrayPaths:   [],
-  validation:   {
-    all:   {
+  arrayPaths: [],
+  validation: {
+    all: {
       strict:   false,
       optional: false
     },
     paths: {}
   },
   sanitization: {
-    all:   {
+    all: {
       strict: false
     },
     paths: {}
   }
 };
 
-MappingToSchema.__pickPaths       = pickPaths;
-MappingToSchema.__nextPaths       = nextPaths;
+MappingToSchema.__pickPaths = pickPaths;
+MappingToSchema.__nextPaths = nextPaths;
 MappingToSchema.__getLocalOptions = getLocalOptions;
 
 module.exports = MappingToSchema;

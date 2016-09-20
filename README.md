@@ -1,4 +1,4 @@
-[![Coverage Status](https://coveralls.io/repos/github/groupby/es-mapping-to-schema/badge.svg?branch=master)](https://coveralls.io/github/groupby/es-mapping-to-schema?branch=master) [![CircleCI](https://circleci.com/gh/groupby/es-mapping-to-schema.svg?style=svg)](https://circleci.com/gh/groupby/es-mapping-to-schema)
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/637529966f1248808adb9fa263e98385)](https://www.codacy.com/app/GroupByInc/es-mapping-to-schema?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=groupby/es-mapping-to-schema&amp;utm_campaign=Badge_Grade) [![Coverage Status](https://coveralls.io/repos/github/groupby/es-mapping-to-schema/badge.svg?branch=master)](https://coveralls.io/github/groupby/es-mapping-to-schema?branch=master) [![CircleCI](https://circleci.com/gh/groupby/es-mapping-to-schema.svg?style=svg)](https://circleci.com/gh/groupby/es-mapping-to-schema)
 
 ## Elasticsearch Mapping to Schema Inspector schema
 
