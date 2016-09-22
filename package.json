@@ -4,10 +4,8 @@
   "description": "Convert Elasticsearch mappings to Schema Inspector schemas",
   "main": "index.js",
   "scripts": {
-    "test": "mocha test.js",
-    "patch": "npm version patch && git push && git push --tags && npm publish",
-    "minor": "npm version minor && git push && git push --tags && npm publish",
-    "major": "npm version major && git push && git push --tags && npm publish"
+    "test": "gulp test",
+    "coverage:codacy": "cat ./coverage/lcov.info | codacy-coverage"
   },
   "repository": {
     "type": "git",
@@ -34,6 +32,7 @@
   },
   "devDependencies": {
     "chai": "^3.5.0",
+    "codacy-coverage": "^2.0.0",
     "coveralls": "^2.11.11",
     "gulp": "^3.9.1",
     "gulp-coveralls": "^0.1.4",

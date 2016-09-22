@@ -9,6 +9,7 @@ dependencies:
 test:
   override:
     - gulp test
+    - npm run coverage:codacy
 deployment:
   npm:
     tag: /v[0-9]+(\.[0-9]+)*/
