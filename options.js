@@ -28,6 +28,10 @@ const VALIDATION_SCHEMA = {
             optional: {
               optional: true,
               type:     'boolean'
+            },
+            minLength: {
+              optional: true,
+              type:     'integer'
             }
           }
         },

@@ -39,8 +39,7 @@ const recurseMappingObjects = (mapping, schema, schemaType, options, localOption
 
   if (mapping.properties || mapping.type === 'object' || mapping.type === 'nested' || options.isArray) {
     if (options.isArray) {
-      schema.items = {};
-      schema.items.type = determineType(mapping, {}, schemaType, Object.assign({}, options, {isArray: false})).type;
+      schema.items = determineType(mapping, {}, schemaType, Object.assign({}, options, {isArray: false}));
 
       if (mapping.properties) {
         schema.items.properties = recurseMappingProperties(mapping.properties, {}, schemaType, options, {});
@@ -80,19 +79,27 @@ const determineType = (mapping, schema, schemaType, options) => {
       schema.type = type;
     }
 
-    if (options[schemaType].all.maxLength && mapping.type === 'string') {
+    if (options[schemaType].all.maxLength && mapping.type === 'string' && schema.type !== 'array') {
       schema.maxLength = options[schemaType].all.maxLength;
     }
 
     // Important to check that the mapping.type is a string, and not schema.type
     // because schema.type may not be populated if we don't want type coercion
-    if (options[schemaType].all.rules && mapping.type === 'string') {
+    if (options[schemaType].all.rules && mapping.type === 'string' && schema.type !== 'array') {
       schema.rules = options[schemaType].all.rules;
     }
   }
 
   if (schemaType === VALIDATION_SCHEMA && type) {
     schema.type = type;
+
+    if (options[schemaType].all.minLength && mapping.type === 'string' && schema.type !== 'array') {
+      schema.minLength = options[schemaType].all.minLength;
+    }
+
+    if (options[schemaType].all.maxLength && mapping.type === 'string' && schema.type !== 'array') {
+      schema.maxLength = options[schemaType].all.maxLength;
+    }
   }
 
   return schema;

@@ -1363,4 +1363,137 @@ describe('es-mapping-to-schema tests', () => {
 
     expect(schemas.sanitization).to.eql(expectedSchema);
   });
+
+  it('should nest sanitization in array', () => {
+    const mapping = {
+      properties: {
+        someString: {
+          type: 'string'
+        }
+      }
+    };
+
+    const expectedSchema = {
+      type:       'object',
+      properties: {
+        someString: {
+          type: 'array',
+          items: {
+            type: 'string',
+            rules: [
+              'trim',
+              'lower'
+            ]
+          }
+        }
+      }
+    };
+
+    const schemas = MappingToSchema(mapping, {
+      arrayPaths: [
+        'someString'
+      ],
+      sanitization: {
+        all: {
+          types: [
+            'object',
+            'integer',
+            'string',
+            'number',
+            'array',
+            'boolean',
+            'date'
+          ],
+          rules: [
+            'trim',
+            'lower'
+          ]
+        }
+      }
+    });
+
+    expect(schemas.sanitization).to.eql(expectedSchema);
+  });
+
+  it('should nest validation in array', () => {
+    const mapping = {
+      properties: {
+        someString: {
+          type: 'string'
+        }
+      }
+    };
+
+    const expectedSchema = {
+      type:       'object',
+      properties: {
+        someString: {
+          type: 'array',
+          items: {
+            type: 'string'
+          }
+        }
+      }
+    };
+
+    const schemas = MappingToSchema(mapping, {
+      arrayPaths: [
+        'someString'
+      ],
+      validation: {
+        all: {
+          types: [
+            'object',
+            'integer',
+            'string',
+            'number',
+            'array',
+            'boolean',
+            'date'
+          ]
+        }
+      }
+    });
+
+    expect(schemas.validation).to.eql(expectedSchema);
+  });
+
+  it('should apply minLength validation', () => {
+    const mapping = {
+      properties: {
+        someString: {
+          type: 'string'
+        }
+      }
+    };
+
+    const expectedSchema = {
+      type:       'object',
+      properties: {
+        someString: {
+          type: 'string',
+          minLength: 1
+        }
+      }
+    };
+
+    const schemas = MappingToSchema(mapping, {
+      validation: {
+        all: {
+          minLength: 1,
+          types: [
+            'object',
+            'integer',
+            'string',
+            'number',
+            'array',
+            'boolean',
+            'date'
+          ]
+        }
+      }
+    });
+
+    expect(schemas.validation).to.eql(expectedSchema);
+  });
 });
