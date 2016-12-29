@@ -7,51 +7,51 @@ const MappingToSchema = require('./index');
 describe('es-mapping-to-schema tests', () => {
   it('should convert a mapping into a validation and sanitization schemas', () => {
     const mapping = {
-      _all: {
+      _all:       {
         enabled: false
       },
       properties: {
-        booleanThing: {
+        booleanThing:           {
           type: 'boolean'
         },
-        stringThing: {
+        stringThing:            {
           type: 'string'
         },
-        integerThing: {
+        integerThing:           {
           type: 'integer'
         },
-        longThing: {
+        longThing:              {
           type: 'long'
         },
-        shortThing: {
+        shortThing:             {
           type: 'short'
         },
-        byteThing: {
+        byteThing:              {
           type: 'byte'
         },
-        floatThing: {
+        floatThing:             {
           type: 'float'
         },
-        doubleThing: {
+        doubleThing:            {
           type: 'double'
         },
         nonanalyzedStringThing: {
           type:  'string',
           index: 'not_analyzed'
         },
-        variousTerm: {
+        variousTerm:            {
           type:   'string',
           fields: {
-            raw: {
+            raw:         {
               type:  'string',
               index: 'not_analyzed',
               store: true
             },
-            normalized: {
+            normalized:  {
               type:     'string',
               analyzer: 'facet_analyzer'
             },
-            lang_en: {
+            lang_en:     {
               type:     'string',
               analyzer: 'english'
             },
@@ -61,33 +61,33 @@ describe('es-mapping-to-schema tests', () => {
             }
           }
         },
-        customer: {
+        customer:               {
           type:       'object',
           properties: {
             customerId: {
               type:  'string',
               index: 'not_analyzed'
             },
-            projectId: {
+            projectId:  {
               type:  'string',
               index: 'not_analyzed'
             },
-            localTime: {
+            localTime:  {
               type:   'date',
               format: 'dateOptionalTime'
             }
           }
         },
-        selectors: {
+        selectors:              {
           type:              'nested',
           include_in_parent: true,
           properties:        {
             selector: {
               properties: {
-                name: {
+                name:  {
                   type:   'string',
                   fields: {
-                    raw: {
+                    raw:        {
                       type:  'string',
                       index: 'not_analyzed',
                       store: true
@@ -118,57 +118,57 @@ describe('es-mapping-to-schema tests', () => {
     const expectedSchema = {
       type:       'object',
       properties: {
-        booleanThing: {
+        booleanThing:           {
           type: 'boolean'
         },
-        stringThing: {
+        stringThing:            {
           type: 'string'
         },
-        integerThing: {
+        integerThing:           {
           type: 'integer'
         },
-        longThing: {
+        longThing:              {
           type: 'integer'
         },
-        shortThing: {
+        shortThing:             {
           type: 'integer'
         },
-        byteThing: {
+        byteThing:              {
           type: 'integer'
         },
-        floatThing: {
+        floatThing:             {
           type: 'number'
         },
-        doubleThing: {
+        doubleThing:            {
           type: 'number'
         },
         nonanalyzedStringThing: {
           type: 'string'
         },
-        variousTerm: {
+        variousTerm:            {
           type: 'string'
         },
-        customer: {
+        customer:               {
           type:       'object',
           properties: {
             customerId: {
               type: 'string'
             },
-            projectId: {
+            projectId:  {
               type: 'string'
             },
-            localTime: {
+            localTime:  {
               type: 'date'
             }
           }
         },
-        selectors: {
+        selectors:              {
           type:       'object',
           properties: {
             selector: {
               type:       'object',
               properties: {
-                name: {
+                name:  {
                   type: 'string'
                 },
                 value: {
@@ -209,9 +209,9 @@ describe('es-mapping-to-schema tests', () => {
         booleanThing: {
           type: 'boolean'
         },
-        selectors: {
+        selectors:    {
           properties: {
-            name: {
+            name:  {
               type: 'string'
             },
             value: {
@@ -229,13 +229,13 @@ describe('es-mapping-to-schema tests', () => {
         booleanThing: {
           type: 'boolean'
         },
-        selectors: {
+        selectors:    {
           type:  'array',
           items: {
             type:       'object',
             strict:     true,
             properties: {
-              name: {
+              name:  {
                 type: 'string'
               },
               value: {
@@ -248,7 +248,7 @@ describe('es-mapping-to-schema tests', () => {
     };
 
     const schemas = MappingToSchema(mapping, {
-      arrayPaths: [
+      arrayPaths:   [
         'selectors'
       ],
       sanitization: {
@@ -265,7 +265,7 @@ describe('es-mapping-to-schema tests', () => {
           ]
         }
       },
-      validation: {
+      validation:   {
         all: {
           strict: true
         }
@@ -307,11 +307,11 @@ describe('es-mapping-to-schema tests', () => {
         booleanThing: {
           type: 'boolean'
         },
-        selectors: {
+        selectors:    {
           properties: {
             selector: {
               properties: {
-                name: {
+                name:  {
                   type: 'string'
                 },
                 value: {
@@ -331,7 +331,7 @@ describe('es-mapping-to-schema tests', () => {
         booleanThing: {
           type: 'boolean'
         },
-        selectors: {
+        selectors:    {
           type:  'array',
           items: {
             type:       'object',
@@ -341,7 +341,7 @@ describe('es-mapping-to-schema tests', () => {
                 type:       'object',
                 strict:     true,
                 properties: {
-                  name: {
+                  name:  {
                     type: 'string'
                   },
                   value: {
@@ -356,7 +356,7 @@ describe('es-mapping-to-schema tests', () => {
     };
 
     const schemas = MappingToSchema(mapping, {
-      arrayPaths: [
+      arrayPaths:   [
         'selectors'
       ],
       sanitization: {
@@ -373,7 +373,7 @@ describe('es-mapping-to-schema tests', () => {
           ]
         }
       },
-      validation: {
+      validation:   {
         all: {
           strict: true
         }
@@ -405,7 +405,7 @@ describe('es-mapping-to-schema tests', () => {
             name:  'thing',
             value: 'other'
           },
-          extra: 'this'
+          extra:    'this'
         }
       ]
     };
@@ -419,11 +419,11 @@ describe('es-mapping-to-schema tests', () => {
         booleanThing: {
           type: 'boolean'
         },
-        selectors: {
+        selectors:    {
           properties: {
             selector: {
               properties: {
-                name: {
+                name:  {
                   type: 'string'
                 },
                 value: {
@@ -442,13 +442,13 @@ describe('es-mapping-to-schema tests', () => {
         booleanThing: {
           type: 'boolean'
         },
-        selectors: {
+        selectors:    {
           type:       'object',
           properties: {
             selector: {
               type:       'object',
               properties: {
-                name: {
+                name:  {
                   type:     'string',
                   optional: true
                 },
@@ -464,7 +464,7 @@ describe('es-mapping-to-schema tests', () => {
     };
 
     const schemas = MappingToSchema(mapping, {
-      validation: {
+      validation:   {
         paths: {
           optional: [
             {
@@ -479,7 +479,7 @@ describe('es-mapping-to-schema tests', () => {
         }
       },
       sanitization: {
-        all: {
+        all:   {
           types: [
             'object',
             'string',
@@ -515,11 +515,11 @@ describe('es-mapping-to-schema tests', () => {
         booleanThing: {
           type: 'boolean'
         },
-        selectors: {
+        selectors:    {
           properties: {
             selector: {
               properties: {
-                name: {
+                name:  {
                   type: 'string'
                 },
                 value: {
@@ -539,7 +539,7 @@ describe('es-mapping-to-schema tests', () => {
         booleanThing: {
           type: 'boolean'
         },
-        selectors: {
+        selectors:    {
           type:       'object',
           strict:     true,
           properties: {
@@ -547,7 +547,7 @@ describe('es-mapping-to-schema tests', () => {
               type:       'object',
               strict:     true,
               properties: {
-                name: {
+                name:  {
                   type: 'string'
                 },
                 value: {
@@ -561,7 +561,7 @@ describe('es-mapping-to-schema tests', () => {
     };
 
     const schemas = MappingToSchema(mapping, {
-      validation: {
+      validation:   {
         all: {
           strict: true
         }
@@ -592,11 +592,11 @@ describe('es-mapping-to-schema tests', () => {
         booleanThing: {
           type: 'boolean'
         },
-        selectors: {
+        selectors:    {
           properties: {
             selector: {
               properties: {
-                name: {
+                name:  {
                   type: 'string'
                 },
                 value: {
@@ -615,14 +615,14 @@ describe('es-mapping-to-schema tests', () => {
         booleanThing: {
           type: 'boolean'
         },
-        selectors: {
+        selectors:    {
           type:       'object',
           strict:     true,
           properties: {
             selector: {
               type:       'object',
               properties: {
-                name: {
+                name:  {
                   type: 'string'
                 },
                 value: {
@@ -636,7 +636,7 @@ describe('es-mapping-to-schema tests', () => {
     };
 
     const schemas = MappingToSchema(mapping, {
-      validation: {
+      validation:   {
         paths: {
           strict: [
             {
@@ -647,7 +647,7 @@ describe('es-mapping-to-schema tests', () => {
         }
       },
       sanitization: {
-        all: {
+        all:   {
           types: [
             'object',
             'string',
@@ -679,11 +679,11 @@ describe('es-mapping-to-schema tests', () => {
         booleanThing: {
           type: 'boolean'
         },
-        selectors: {
+        selectors:    {
           properties: {
             selector: {
               properties: {
-                name: {
+                name:  {
                   type: 'string'
                 },
                 value: {
@@ -703,7 +703,7 @@ describe('es-mapping-to-schema tests', () => {
         booleanThing: {
           type: 'boolean'
         },
-        selectors: {
+        selectors:    {
           type:       'object',
           strict:     true,
           properties: {
@@ -712,7 +712,7 @@ describe('es-mapping-to-schema tests', () => {
               type:       'object',
               optional:   true,
               properties: {
-                name: {
+                name:  {
                   type: 'string'
                 },
                 value: {
@@ -726,8 +726,8 @@ describe('es-mapping-to-schema tests', () => {
     };
 
     const schemas = MappingToSchema(mapping, {
-      validation: {
-        all: {
+      validation:   {
+        all:   {
           strict: true
         },
         paths: {
@@ -740,7 +740,7 @@ describe('es-mapping-to-schema tests', () => {
         }
       },
       sanitization: {
-        all: {
+        all:   {
           strict: true,
           types:  [
             'object',
@@ -773,11 +773,11 @@ describe('es-mapping-to-schema tests', () => {
         booleanThing: {
           type: 'boolean'
         },
-        selectors: {
+        selectors:    {
           properties: {
             selector: {
               properties: {
-                name: {
+                name:  {
                   type: 'string'
                 },
                 value: {
@@ -796,13 +796,13 @@ describe('es-mapping-to-schema tests', () => {
         booleanThing: {
           type: 'boolean'
         },
-        selectors: {
+        selectors:    {
           type:       'object',
           properties: {
             selector: {
               type:       'object',
               properties: {
-                name: {
+                name:  {
                   type: 'string'
                 },
                 value: {
@@ -821,13 +821,13 @@ describe('es-mapping-to-schema tests', () => {
         booleanThing: {
           type: 'boolean'
         },
-        selectors: {
+        selectors:    {
           type:       'object',
           properties: {
             selector: {
               type:       'object',
               properties: {
-                name: {
+                name:  {
                   type:  'string',
                   rules: [
                     'trim',
@@ -874,7 +874,7 @@ describe('es-mapping-to-schema tests', () => {
 
   it('should shorten all paths by one level', () => {
     const paths = {
-      def: [
+      def:      [
         {
           path:  'something.yo.this',
           value: true
@@ -899,7 +899,7 @@ describe('es-mapping-to-schema tests', () => {
     const shortenedPaths = MappingToSchema.__nextPaths(paths);
 
     expect(shortenedPaths).to.eql({
-      def: [
+      def:      [
         {
           path:  'yo.this',
           value: true
@@ -920,7 +920,7 @@ describe('es-mapping-to-schema tests', () => {
 
   it('should return the options applicable to a specific field', () => {
     const paths = {
-      def: [
+      def:      [
         {
           path:  'something.yo.this',
           value: true
@@ -952,11 +952,11 @@ describe('es-mapping-to-schema tests', () => {
         booleanThing: {
           type: 'boolean'
         },
-        selectors: {
+        selectors:    {
           properties: {
             selector: {
               properties: {
-                name: {
+                name:  {
                   type: 'string'
                 },
                 value: {
@@ -975,13 +975,13 @@ describe('es-mapping-to-schema tests', () => {
         booleanThing: {
           type: 'boolean'
         },
-        selectors: {
+        selectors:    {
           type:       'object',
           properties: {
             selector: {
               type:       'object',
               properties: {
-                name: {
+                name:  {
                   type: 'string'
                 },
                 value: {
@@ -1029,13 +1029,13 @@ describe('es-mapping-to-schema tests', () => {
   it('should handle mappings with properties named "type" or "properties"', () => {
     const mapping = {
       properties: {
-        type: {
+        type:       {
           type: 'string'
         },
         properties: {
           type: 'string'
         },
-        notType: {
+        notType:    {
           type: 'string'
         }
       }
@@ -1044,13 +1044,13 @@ describe('es-mapping-to-schema tests', () => {
     const expectedValidataionSchema = {
       type:       'object',
       properties: {
-        type: {
+        type:       {
           type: 'string'
         },
         properties: {
           type: 'string'
         },
-        notType: {
+        notType:    {
           type: 'string'
         }
       }
@@ -1076,9 +1076,9 @@ describe('es-mapping-to-schema tests', () => {
         booleanThing: {
           type: 'boolean'
         },
-        selectors: {
+        selectors:    {
           properties: {
-            name: {
+            name:  {
               type: 'string'
             },
             value: {
@@ -1102,10 +1102,10 @@ describe('es-mapping-to-schema tests', () => {
         booleanThing: {
           type: 'boolean'
         },
-        selectors: {
+        selectors:    {
           type:       'object',
           properties: {
-            name: {
+            name:  {
               something: 'wildcard',
               type:      'string'
             },
@@ -1121,13 +1121,13 @@ describe('es-mapping-to-schema tests', () => {
               type: 'number'
             }
           },
-          type: 'object'
+          type:       'object'
         }
       }
     };
 
     const schemas = MappingToSchema(mapping, {
-      validation: {
+      validation:   {
         paths: {
           something: [
             {
@@ -1138,7 +1138,7 @@ describe('es-mapping-to-schema tests', () => {
         }
       },
       sanitization: {
-        all: {
+        all:   {
           types: [
             'object',
             'string',
@@ -1166,7 +1166,7 @@ describe('es-mapping-to-schema tests', () => {
 
   it('should filter down to only the paths that start with the target property', () => {
     const paths = {
-      strict: [
+      strict:   [
         {
           path:  'selectors.something',
           value: true
@@ -1197,7 +1197,7 @@ describe('es-mapping-to-schema tests', () => {
     };
 
     const expectedPicked = {
-      strict: [
+      strict:   [
         {
           path:  'selectors.something',
           value: true
@@ -1238,7 +1238,7 @@ describe('es-mapping-to-schema tests', () => {
     };
 
     const schemas = MappingToSchema(mapping, {
-      arrayPaths: [
+      arrayPaths:   [
         'arrayOfStrings'
       ],
       sanitization: {
@@ -1265,7 +1265,7 @@ describe('es-mapping-to-schema tests', () => {
         someString: {
           type: 'string'
         },
-        someInt: {
+        someInt:    {
           type: 'integer'
         }
       }
@@ -1276,7 +1276,7 @@ describe('es-mapping-to-schema tests', () => {
         someString: {
           maxLength: 20
         },
-        someInt: {}
+        someInt:    {}
       }
     };
 
@@ -1294,18 +1294,18 @@ describe('es-mapping-to-schema tests', () => {
   it('should apply rules to all string mappings', () => {
     const mapping = {
       properties: {
-        someValue: {
+        someValue:  {
           type: 'integer'
         },
         someString: {
           type: 'string'
         },
-        deeper: {
+        deeper:     {
           properties: {
             anotherString: {
               type: 'string'
             },
-            aNumber: {
+            aNumber:       {
               type: 'double'
             }
           }
@@ -1316,7 +1316,7 @@ describe('es-mapping-to-schema tests', () => {
     const expectedSchema = {
       type:       'object',
       properties: {
-        someValue: {
+        someValue:  {
           type: 'integer'
         },
         someString: {
@@ -1325,7 +1325,7 @@ describe('es-mapping-to-schema tests', () => {
             'lower'
           ]
         },
-        deeper: {
+        deeper:     {
           type:       'object',
           properties: {
             anotherString: {
@@ -1334,7 +1334,7 @@ describe('es-mapping-to-schema tests', () => {
                 'lower'
               ]
             },
-            aNumber: {
+            aNumber:       {
               type: 'number'
             }
           }
@@ -1377,9 +1377,9 @@ describe('es-mapping-to-schema tests', () => {
       type:       'object',
       properties: {
         someString: {
-          type: 'array',
+          type:  'array',
           items: {
-            type: 'string',
+            type:  'string',
             rules: [
               'trim',
               'lower'
@@ -1390,7 +1390,7 @@ describe('es-mapping-to-schema tests', () => {
     };
 
     const schemas = MappingToSchema(mapping, {
-      arrayPaths: [
+      arrayPaths:   [
         'someString'
       ],
       sanitization: {
@@ -1415,6 +1415,69 @@ describe('es-mapping-to-schema tests', () => {
     expect(schemas.sanitization).to.eql(expectedSchema);
   });
 
+  it('should apply strict sanitization to arrays of objects', () => {
+    const mapping = {
+      properties: {
+        someObjectArray: {
+          properties: {
+            thing: {
+              type: 'string'
+            }
+          }
+        }
+      }
+    };
+
+    const expectedSchema = {
+      type:       'object',
+      strict:     true,
+      properties: {
+        someObjectArray: {
+          type:  'array',
+          items: {
+            strict:     true,
+            type:       'object',
+            properties: {
+              thing: {
+                type:  'string',
+                rules: [
+                  'trim',
+                  'lower'
+                ]
+              }
+            }
+          }
+        }
+      }
+    };
+
+    const schemas = MappingToSchema(mapping, {
+      arrayPaths:   [
+        'someObjectArray'
+      ],
+      sanitization: {
+        all: {
+          strict: true,
+          types:  [
+            'object',
+            'integer',
+            'string',
+            'number',
+            'array',
+            'boolean',
+            'date'
+          ],
+          rules:  [
+            'trim',
+            'lower'
+          ]
+        }
+      }
+    });
+
+    expect(schemas.sanitization).to.eql(expectedSchema);
+  });
+
   it('should nest validation in array', () => {
     const mapping = {
       properties: {
@@ -1428,7 +1491,7 @@ describe('es-mapping-to-schema tests', () => {
       type:       'object',
       properties: {
         someString: {
-          type: 'array',
+          type:  'array',
           items: {
             type: 'string'
           }
@@ -1471,7 +1534,7 @@ describe('es-mapping-to-schema tests', () => {
       type:       'object',
       properties: {
         someString: {
-          type: 'string',
+          type:      'string',
           minLength: 1
         }
       }
@@ -1481,7 +1544,7 @@ describe('es-mapping-to-schema tests', () => {
       validation: {
         all: {
           minLength: 1,
-          types: [
+          types:     [
             'object',
             'integer',
             'string',
@@ -1495,5 +1558,33 @@ describe('es-mapping-to-schema tests', () => {
     });
 
     expect(schemas.validation).to.eql(expectedSchema);
+  });
+
+  it('optionally diaable warnings', () => {
+    const mapping = {
+      properties: {
+        someString: {
+          type: 'geo_point'
+        }
+      }
+    };
+
+    MappingToSchema(mapping, {
+      disableWarnings: true,
+      validation: {
+        all: {
+          minLength: 1,
+          types:     [
+            'object',
+            'integer',
+            'string',
+            'number',
+            'array',
+            'boolean',
+            'date'
+          ]
+        }
+      }
+    });
   });
 });

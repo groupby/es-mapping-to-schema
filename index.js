@@ -72,7 +72,7 @@ const recurseMappingObjects = (mapping, schema, schemaType, options, localOption
 
 const determineType = (mapping, schema, schemaType, options) => {
   const mappingType = mapping.properties ? 'object' : mapping.type;
-  const type        = convertEsTypeToSchemaType(mappingType, options.isArray);
+  const type        = convertEsTypeToSchemaType(mappingType, options.isArray, options.disableWarnings);
 
   if (schemaType === SANITIZATION_SCHEMA) {
     if (type && _.includes(options[schemaType].all.types, type)) {
@@ -166,7 +166,7 @@ const MappingToSchema = (mapping, options) => {
 };
 
 
-const convertEsTypeToSchemaType = (type, isArray) => {
+const convertEsTypeToSchemaType = (type, isArray, disableWarnings) => {
   if (_.includes(DIRECT_COPY_TYPES, type)) {
     return isArray ? 'array' : type;
   } else {
@@ -183,13 +183,16 @@ const convertEsTypeToSchemaType = (type, isArray) => {
     case undefined:
       return null;
     default:
-      console.warn(`mapping type: ${_.isObject(type) ? JSON.stringify(type, null, 2) : type} is unsupported and will be ignored`);
+      if (!disableWarnings) {
+        console.warn(`mapping type: ${_.isObject(type) ? JSON.stringify(type, null, 2) : type} is unsupported and will be ignored`);
+      }
       return null;
     }
   }
 };
 
 const DEFAULTS = {
+  disableWarnings: false,
   arrayPaths: [],
   validation: {
     all: {

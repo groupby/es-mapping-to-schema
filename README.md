@@ -98,6 +98,8 @@ expect(schemas.sanitization).to.eql(expectedSchema);
 ### Options:
 ```javascript
 const Options = {
+  // Do not display warnings when an unknown type is encountered
+  disableWarnings: false,
   // 'arrayPaths' are used to define properties in the mapping that appear as objects but should be validated as arrays
   // This is because elasticsearch does not explicitly support arrays, but schema inspector does
   arrayPaths:   [],

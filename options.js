@@ -5,6 +5,11 @@ const VALIDATION_SCHEMA = {
   type:       'object',
   strict:     true,
   properties: {
+    disableWarnings: {
+      optional: true,
+      def: false,
+      type: 'boolean'
+    },
     arrayPaths: {
       optional: true,
       type:     'array',
