@@ -42,7 +42,7 @@
     "gulp-mocha": "^3.0.1",
     "istanbul": "^0.4.3",
     "mocha-lcov-reporter": "^1.2.0",
-    "supertest": "^2.0.1",
+    "supertest": "^3.0.0",
     "supertest-as-promised": "^4.0.2"
   }
 }
