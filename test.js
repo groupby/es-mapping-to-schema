@@ -1474,6 +1474,59 @@ describe('es-mapping-to-schema tests', () => {
     expect(schemas.sanitization).to.eql(expectedSchema);
   });
 
+  it('should NOT nest sanitization in array for individual optional fields', () => {
+    const mapping = {
+      properties: {
+        someString: {
+          type: 'string'
+        }
+      }
+    };
+
+    const expectedSchema = {
+      type:       'object',
+      properties: {
+        someString: {
+          type:     'array',
+          optional: true,
+          items:    {
+            type: 'string'
+          }
+        }
+      }
+    };
+
+    const schemas = MappingToSchema(mapping, {
+      arrayPaths: [
+        'someString'
+      ],
+      sanitization: {
+        all: {
+          types: [
+            'object',
+            'integer',
+            'string',
+            'number',
+            'array',
+            'boolean',
+            'date'
+          ]
+        },
+        paths: {
+          optional: [
+            {
+              path:  'someString',
+              value: true
+            }
+          ]
+
+        }
+      }
+    });
+
+    expect(schemas.sanitization).to.eql(expectedSchema);
+  });
+
   it('should apply strict sanitization to arrays of objects', () => {
     const mapping = {
       properties: {
