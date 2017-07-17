@@ -193,8 +193,8 @@ const convertEsTypeToSchemaType = (type, isArray, disableWarnings) => {
 
 const DEFAULTS = {
   disableWarnings: false,
-  arrayPaths: [],
-  validation: {
+  arrayPaths:      [],
+  validation:      {
     all: {
       strict:   false,
       optional: false

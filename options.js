@@ -7,8 +7,8 @@ const VALIDATION_SCHEMA = {
   properties: {
     disableWarnings: {
       optional: true,
-      def: false,
-      type: 'boolean'
+      def:      false,
+      type:     'boolean'
     },
     arrayPaths: {
       optional: true,
