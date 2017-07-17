@@ -64,7 +64,11 @@ const recurseMappingObjects = (mapping, schema, schemaType, options, localOption
   }
 
   _.forEach(localOptions, (value, field) => {
-    schema[field] = value;
+    if (options.isArray) {
+      schema.items[field] = value;
+    } else {
+      schema[field] = value;
+    }
   });
 
   return schema;

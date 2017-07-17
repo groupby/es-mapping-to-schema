@@ -1364,7 +1364,7 @@ describe('es-mapping-to-schema tests', () => {
     expect(schemas.sanitization).to.eql(expectedSchema);
   });
 
-  it('should nest sanitization in array', () => {
+  it('should nest sanitization in array for all', () => {
     const mapping = {
       properties: {
         someString: {
@@ -1408,6 +1408,65 @@ describe('es-mapping-to-schema tests', () => {
             'trim',
             'lower'
           ]
+        }
+      }
+    });
+
+    expect(schemas.sanitization).to.eql(expectedSchema);
+  });
+
+  it('should nest sanitization in array for individual fields', () => {
+    const mapping = {
+      properties: {
+        someString: {
+          type: 'string'
+        }
+      }
+    };
+
+    const expectedSchema = {
+      type:       'object',
+      properties: {
+        someString: {
+          type:  'array',
+          items: {
+            type:  'string',
+            rules: [
+              'trim',
+              'lower'
+            ]
+          }
+        }
+      }
+    };
+
+    const schemas = MappingToSchema(mapping, {
+      arrayPaths: [
+        'someString'
+      ],
+      sanitization: {
+        all: {
+          types: [
+            'object',
+            'integer',
+            'string',
+            'number',
+            'array',
+            'boolean',
+            'date'
+          ]
+        },
+        paths: {
+          rules: [
+            {
+              path:  'someString',
+              value: [
+                'trim',
+                'lower'
+              ]
+            }
+          ]
+
         }
       }
     });
