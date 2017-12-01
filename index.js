@@ -184,6 +184,9 @@ const convertEsTypeToSchemaType = (type, isArray, disableWarnings) => {
     case 'short':
     case 'byte':
       return 'integer';
+    case 'text':
+    case 'keyword':
+      return 'string';
     case undefined:
       return null;
     default:
